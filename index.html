@@ -1,29 +1,190 @@
-Conecta RH
-Conectando empresas aos profissionais certos.
-0
-Currículos
-0
-Clientes
-0
-Vagas Personalizadas
-👤 Sou Candidato
-Cadastrar Currículo
-🏢 Sou Cliente
-Auxiliar Administrativo
-Vendedor
-Motorista
-Operador de Produção
-Outro
-Pacote: 10 currículos • Prazo: 2 dias • 50% antecipado
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conecta RH</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#f4f7fb;color:#1d2b3a}
+header{background:linear-gradient(135deg,#0d47a1,#1976d2);color:#fff;padding:50px 20px;text-align:center}
+header h1{font-size:3rem}
+header p{margin-top:10px}
+.container{max-width:1200px;margin:auto;padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px}
+.card{background:#fff;padding:20px;border-radius:18px;box-shadow:0 10px 25px rgba(0,0,0,.08)}
+h2{margin-bottom:15px;color:#0d47a1}
+input,select,textarea{width:100%;padding:12px;margin:6px 0;border:1px solid #ccc;border-radius:10px}
+button{background:#1976d2;color:#fff;border:none;padding:12px 18px;border-radius:10px;cursor:pointer}
+button:hover{opacity:.9}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0}
+.stat{background:#fff;padding:15px;border-radius:15px;text-align:center}
+.footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:30px}
+.hidden{display:none}
+#adminPanel{margin-top:30px}
+.small{font-size:.9rem;color:#666}
+@media(max-width:700px){.footer-grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
 
-Solicitar Currículos
-📋 Vagas Personalizadas
-Solicitar Orçamento 
+<header>
+<h1>Conecta RH</h1>
+<p>Conectando empresas aos profissionais certos.</p>
+</header>
 
-WhatsApp
-Sobre a Conecta RH
-A Conecta RH atua conectando empresas aos melhores profissionais do mercado.
-Atualizações da Semana
-Novas vagas serão publicadas aqui.
-🔒 Área Administrativa
-Entrar
+<div class="container">
+
+<div class="stats">
+<div class="stat"><h3 id="cCount">0</h3><p>Currículos</p></div>
+<div class="stat"><h3 id="cliCount">0</h3><p>Clientes</p></div>
+<div class="stat"><h3 id="vCount">0</h3><p>Vagas Personalizadas</p></div>
+</div>
+
+<div class="grid">
+
+<div class="card">
+<h2>👤 Sou Candidato</h2>
+<input id="cnome" placeholder="Nome completo">
+<input id="cemail" placeholder="E-mail">
+<input id="ctel" placeholder="Telefone">
+<input id="ccidade" placeholder="Cidade">
+<input id="ccargo" placeholder="Cargo desejado">
+<textarea id="cexp" placeholder="Experiência"></textarea>
+<input type="file" id="cpdf">
+<button onclick="salvarCandidato()">Cadastrar Currículo</button>
+</div>
+
+<div class="card">
+<h2>🏢 Sou Cliente</h2>
+<input id="empresa" placeholder="Empresa">
+<input id="responsavel" placeholder="Responsável">
+<input id="emailCli" placeholder="E-mail">
+<input id="telCli" placeholder="Telefone">
+<select id="perfil">
+<option>Auxiliar Administrativo</option>
+<option>Vendedor</option>
+<option>Motorista</option>
+<option>Operador de Produção</option>
+<option>Outro</option>
+</select>
+<textarea id="perfilDesc" placeholder="Descreva o perfil desejado"></textarea>
+<p class="small">Pacote: 10 currículos • Prazo: 2 dias • 50% antecipado</p><br>
+<button onclick="salvarCliente()">Solicitar Currículos</button>
+</div>
+
+<div class="card">
+<h2>📋 Vagas Personalizadas</h2>
+<input id="vempresa" placeholder="Empresa">
+<input id="vcargo" placeholder="Cargo">
+<input id="vqtd" placeholder="Quantidade de vagas">
+<textarea id="vdesc" placeholder="Descrição"></textarea>
+<button onclick="salvarVaga()">Solicitar Orçamento</button>
+<br><br>
+<button onclick="window.open('https://wa.me/5511999999999')">WhatsApp</button>
+</div>
+
+</div>
+
+<div class="footer-grid">
+<div class="card">
+<h2>Sobre a Conecta RH</h2>
+<textarea id="sobre" rows="8">A Conecta RH atua conectando empresas aos melhores profissionais do mercado.</textarea>
+</div>
+
+<div class="card">
+<h2>Atualizações da Semana</h2>
+<textarea id="atualizacoes" rows="8">Novas vagas serão publicadas aqui.</textarea>
+</div>
+</div>
+
+<div class="card" style="margin-top:25px">
+<h2>🔒 Área Administrativa</h2>
+<input type="password" id="senha" placeholder="Senha">
+<button onclick="abrirAdmin()">Entrar</button>
+
+<div id="adminPanel" class="hidden">
+<h3>Currículos</h3>
+<div id="curriculos"></div>
+<hr><br>
+<h3>Clientes</h3>
+<div id="clientes"></div>
+<hr><br>
+<h3>Vagas</h3>
+<div id="vagas"></div>
+</div>
+</div>
+
+</div>
+
+<script>
+function getData(k){return JSON.parse(localStorage.getItem(k)||"[]")}
+function setData(k,v){localStorage.setItem(k,JSON.stringify(v));atualizar()}
+
+function salvarCandidato(){
+ let dados=getData("candidatos");
+ dados.push({
+ nome:cnome.value,email:cemail.value,tel:ctel.value,cidade:ccidade.value,
+ cargo:ccargo.value,exp:cexp.value,pdf:cpdf.value.split("\\\\").pop()
+ });
+ setData("candidatos",dados);
+ alert("Currículo cadastrado!");
+}
+
+function salvarCliente(){
+ let dados=getData("clientes");
+ dados.push({
+ empresa:empresa.value,responsavel:responsavel.value,email:emailCli.value,
+ tel:telCli.value,perfil:perfil.value,descricao:perfilDesc.value
+ });
+ setData("clientes",dados);
+ alert("Solicitação enviada!");
+}
+
+function salvarVaga(){
+ let dados=getData("vagas");
+ dados.push({
+ empresa:vempresa.value,cargo:vcargo.value,qtd:vqtd.value,desc:vdesc.value
+ });
+ setData("vagas",dados);
+ alert("Orçamento solicitado!");
+}
+
+function abrirAdmin(){
+ if(document.getElementById("senha").value==="admin123"){
+   adminPanel.classList.remove("hidden");
+   atualizar();
+ }else{
+   alert("Senha incorreta");
+ }
+}
+
+function atualizar(){
+ let c=getData("candidatos");
+ let cl=getData("clientes");
+ let v=getData("vagas");
+
+ cCount.innerText=c.length;
+ cliCount.innerText=cl.length;
+ vCount.innerText=v.length;
+
+ curriculos.innerHTML=c.map((x,i)=>`<p><b>${x.nome}</b> - ${x.cargo}
+ <button onclick="del('candidatos',${i})">Excluir</button></p>`).join("");
+
+ clientes.innerHTML=cl.map((x,i)=>`<p><b>${x.empresa}</b> - ${x.perfil}
+ <button onclick="del('clientes',${i})">Excluir</button></p>`).join("");
+
+ vagas.innerHTML=v.map((x,i)=>`<p><b>${x.empresa}</b> - ${x.cargo}
+ <button onclick="del('vagas',${i})">Excluir</button></p>`).join("");
+}
+
+function del(chave,i){
+ let dados=getData(chave);
+ dados.splice(i,1);
+ setData(chave,dados);
+}
+
+atualizar();
+</script>
+</body>
+</html>
