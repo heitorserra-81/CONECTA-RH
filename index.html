@@ -2,341 +2,1018 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#0A0D1C" />
-<title>ConectaRH — talento e oportunidade no lugar certo</title>
+<title>KonectaRH — talento e oportunidade no lugar certo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-<!-- Firebase (compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-
 <style>
-:root{
-  --bg:#0A0D1C; --bg2:#111634; --bg3:#0d1126;
-  --surface:rgba(255,255,255,.045);
-  --surface-2:rgba(255,255,255,.07);
-  --line:rgba(255,255,255,.10);
-  --violet:#8B5CF6; --violet-2:#A78BFA;
-  --cyan:#22D3EE; --emerald:#34D399;
-  --text:#ECEEF8; --muted:#9AA1C4; --muted-2:#6E769C;
-  --grad:linear-gradient(120deg,#8B5CF6 0%,#6366F1 45%,#22D3EE 100%);
-  --grad-soft:linear-gradient(120deg,rgba(139,92,246,.18),rgba(34,211,238,.14));
-  --radius:22px; --radius-sm:14px;
-  --shadow:0 24px 60px -20px rgba(0,0,0,.65);
-}
+/* ============================================================
+   RESET & TOKENS
+   ============================================================ */
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
+html,body{overflow-x:hidden;max-width:100vw}
+
+:root{
+  --bg:#0A0D1C; --bg2:#0e1430; --bg3:#0d1126;
+  --surface:rgba(255,255,255,.05);
+  --surface-2:rgba(255,255,255,.08);
+  --line:rgba(255,255,255,.10);
+  --blue:#3B82F6; --blue-2:#60A5FA; --blue-3:#2563EB;
+  --sky:#38BDF8; --ice:#93C5FD;
+  --emerald:#34D399;
+  --wa:#25D366;
+  --text:#EAF0FF; --muted:#9FB0D8; --muted-2:#6E7CA8;
+  --gold:#FBBF24;
+  --grad:linear-gradient(120deg,#2563EB 0%,#3B82F6 50%,#38BDF8 100%);
+  --grad-gold:linear-gradient(120deg,#F59E0B,#FBBF24,#FCD34D);
+  --grad-soft:linear-gradient(120deg,rgba(59,130,246,.18),rgba(56,189,248,.14));
+  --radius:22px;
+  --shadow:0 24px 60px -20px rgba(0,0,0,.65);
+  --header-h:66px;
+}
+
 body{
   font-family:'Inter',system-ui,sans-serif;
-  background:var(--bg); color:var(--text);
-  -webkit-font-smoothing:antialiased; line-height:1.55;
-  overflow-x:hidden;
+  background:var(--bg);color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.55;
+  position:relative;
 }
 body::before{
-  content:""; position:fixed; inset:0; z-index:-2;
+  content:"";position:fixed;inset:0;z-index:-2;
   background:
-    radial-gradient(900px 500px at 80% -8%, rgba(139,92,246,.28), transparent 60%),
-    radial-gradient(820px 520px at -5% 12%, rgba(34,211,238,.18), transparent 55%),
-    linear-gradient(180deg,var(--bg) 0%, var(--bg3) 55%, var(--bg) 100%);
+    radial-gradient(900px 520px at 80% -8%,rgba(59,130,246,.30),transparent 60%),
+    radial-gradient(820px 520px at -5% 12%,rgba(56,189,248,.18),transparent 55%),
+    linear-gradient(180deg,var(--bg) 0%,var(--bg3) 55%,var(--bg) 100%)
 }
-#net{position:fixed; inset:0; z-index:-1; opacity:.55}
-h1,h2,h3,.display{font-family:'Bricolage Grotesque','Inter',sans-serif; line-height:1.05; letter-spacing:-.02em}
-a{color:inherit; text-decoration:none}
-.wrap{max-width:1120px; margin:0 auto; padding:0 22px}
+#net{position:fixed;inset:0;z-index:-1;opacity:.5;max-width:100vw}
 
-/* ---------- Top bar ---------- */
-header{position:sticky; top:0; z-index:40; backdrop-filter:blur(14px);
-  background:linear-gradient(180deg,rgba(10,13,28,.82),rgba(10,13,28,.45));
-  border-bottom:1px solid var(--line)}
-.bar{display:flex; align-items:center; justify-content:space-between; height:66px}
-.brand{display:flex; align-items:center; gap:11px; font-family:'Bricolage Grotesque'; font-weight:800; font-size:1.18rem; letter-spacing:-.01em}
-.brand .logo{width:34px; height:34px; flex:none}
-.brand b{background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent}
-nav{display:flex; align-items:center; gap:6px}
-nav a{color:var(--muted); font-size:.92rem; font-weight:500; padding:8px 12px; border-radius:10px; transition:.2s}
-nav a:hover{color:var(--text); background:var(--surface)}
-.gear{width:38px; height:38px; display:grid; place-items:center; border-radius:11px; border:1px solid var(--line); background:var(--surface); cursor:pointer; transition:.2s; color:var(--muted)}
-.gear:hover{color:var(--text); transform:rotate(35deg)}
-@media(max-width:680px){nav a.navlink{display:none}}
+h1,h2,h3,.display{font-family:'Bricolage Grotesque','Inter',sans-serif;line-height:1.05;letter-spacing:-.02em}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+.gr{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hidden{display:none!important}
 
-/* ---------- Hero ---------- */
-.hero{padding:78px 0 34px; text-align:center; position:relative}
-.eyebrow{display:inline-flex; align-items:center; gap:9px; font-size:.78rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--violet-2); padding:7px 15px; border:1px solid var(--line); border-radius:99px; background:var(--surface); margin-bottom:26px}
+/* ============================================================
+   CHOOSER
+   ============================================================ */
+#chooser{
+  position:fixed;inset:0;z-index:90;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:38px;padding:30px;
+  background:radial-gradient(1000px 600px at 50% -10%,rgba(59,130,246,.22),transparent 60%),var(--bg);
+  text-align:center;overflow:hidden
+}
+#chooser .logo-xl{
+  width:clamp(150px, 35vw, 260px);
+  height:clamp(150px, 35vw, 260px);
+  animation:floaty 5s ease-in-out infinite
+}
+@keyframes floaty{50%{transform:translateY(-10px)}}
+#chooser h1{font-size:clamp(2rem,7vw,3rem);font-weight:800;margin-top:-8px}
+#chooser p{color:var(--muted);margin-top:-18px;font-size:1.02rem}
+.choice-row{display:flex;gap:22px;flex-wrap:wrap;justify-content:center}
+.choice{
+  position:relative;width:200px;height:188px;border-radius:26px;
+  cursor:pointer;display:grid;place-items:center;perspective:800px
+}
+.choice .chinner{
+  position:relative;z-index:2;width:calc(100% - 6px);height:calc(100% - 6px);
+  border-radius:23px;background:linear-gradient(165deg,#10183a,#0b1024);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;transition:transform .3s
+}
+.choice:hover .chinner{transform:translateY(-4px)}
+.choice .chico{
+  width:58px;height:58px;display:grid;place-items:center;
+  border-radius:16px;background:var(--grad-soft);border:1px solid var(--line);color:var(--blue-2)
+}
+.choice .chttl{font-family:'Bricolage Grotesque';font-weight:700;font-size:1.25rem}
+.choice .chsub{font-size:.8rem;color:var(--muted)}
+.glow-spin,.glow-blur{
+  position:absolute;top:50%;left:50%;border-radius:50%;
+  background:conic-gradient(from 0deg,#1D4ED8,#3B82F6,#38BDF8,#93C5FD,#3B82F6,#1D4ED8);
+  animation:spin 5s linear infinite
+}
+.glow-spin{width:155%;height:155%;transform:translate(-50%,-50%);z-index:1}
+.glow-blur{width:165%;height:165%;transform:translate(-50%,-50%);filter:blur(26px);opacity:.55;z-index:0}
+.choice{overflow:visible}
+.choice .clip{position:absolute;inset:0;border-radius:26px;overflow:hidden;z-index:1}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+/* ============================================================
+   HEADER (site + app) - LOGO PEQUENO + BORDÃO
+   ============================================================ */
+header{
+  position:sticky;top:0;z-index:40;
+  backdrop-filter:blur(14px);
+  background:linear-gradient(180deg,rgba(10,13,28,.9),rgba(10,13,28,.6));
+  border-bottom:1px solid var(--line);
+  width:100%;overflow:hidden
+}
+.bar{display:flex;align-items:center;justify-content:space-between;height:var(--header-h)}
+.brand{
+  display:flex;align-items:center;gap:11px;
+  font-family:'Bricolage Grotesque';font-weight:800;font-size:1.18rem;
+  flex-shrink:0;
+  cursor:pointer;
+}
+.brand .logo{width:34px;height:34px;flex:none}
+.brand .brand-text{display:flex;flex-direction:column;line-height:1.15}
+.brand .brand-text .name{font-size:1.18rem;font-weight:800}
+.brand .brand-text .name b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand .brand-text .slogan{
+  font-family:'Inter',sans-serif;
+  font-size:0.55rem;
+  font-weight:400;
+  color:var(--muted);
+  letter-spacing:0.4px;
+  margin-top:-2px;
+  opacity:0.8
+}
+
+/* site nav */
+nav{display:flex;align-items:center;gap:6px}
+nav a.navlink{color:var(--muted);font-size:.92rem;font-weight:500;padding:8px 12px;border-radius:10px;transition:.2s}
+nav a.navlink:hover{color:var(--text);background:var(--surface)}
+.iconbtn{
+  height:38px;padding:0 12px;
+  display:flex;align-items:center;gap:7px;
+  border-radius:11px;border:1px solid var(--line);
+  background:var(--surface);cursor:pointer;transition:.2s;
+  color:var(--muted);font-family:'Inter';font-weight:600;font-size:.82rem;
+  white-space:nowrap
+}
+.iconbtn:hover{color:var(--text);background:var(--surface-2)}
+.gear{width:38px;justify-content:center;padding:0}
+.gear:hover{transform:rotate(35deg)}
+
+/* ============================================================
+   HAMBURGER MENU (app view)
+   ============================================================ */
+.hamburger{
+  width:40px;height:40px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  cursor:pointer;border-radius:12px;border:1px solid var(--line);
+  background:var(--surface);transition:.2s;flex-shrink:0
+}
+.hamburger span{
+  width:18px;height:2px;background:var(--muted);border-radius:2px;
+  transition:transform .3s,opacity .3s,background .3s
+}
+.hamburger:hover span{background:var(--text)}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* drawer */
+#drawer{
+  position:fixed;top:0;right:-100%;width:min(290px,85vw);height:100dvh;
+  z-index:95;
+  background:linear-gradient(175deg,#10183a 0%,#0a0f24 100%);
+  border-left:1px solid var(--line);
+  box-shadow:-20px 0 60px rgba(0,0,0,.5);
+  transition:right .35s cubic-bezier(.2,.8,.2,1);
+  display:flex;flex-direction:column;
+  overflow:hidden
+}
+#drawer.open{right:0}
+#drawerScrim{
+  position:fixed;inset:0;z-index:94;
+  background:rgba(5,7,16,.65);backdrop-filter:blur(4px);
+  display:none;cursor:pointer
+}
+#drawerScrim.show{display:block}
+
+.drawer-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 20px;border-bottom:1px solid var(--line)
+}
+.drawer-header .brand{font-size:1rem}
+.drawer-header .brand .brand-text .slogan{font-size:0.5rem}
+.drawer-close{
+  width:36px;height:36px;border-radius:10px;border:1px solid var(--line);
+  background:var(--surface);color:var(--muted);cursor:pointer;
+  display:grid;place-items:center;font-size:1.1rem;transition:.2s
+}
+.drawer-close:hover{color:var(--text)}
+
+.drawer-nav{flex:1;overflow-y:auto;padding:10px 12px}
+.drawer-nav a,
+.drawer-nav button{
+  display:flex;align-items:center;gap:14px;
+  width:100%;padding:14px 14px;
+  border-radius:14px;border:none;background:transparent;
+  color:var(--muted);font-family:'Inter';font-weight:500;font-size:.97rem;
+  cursor:pointer;text-align:left;text-decoration:none;
+  transition:.18s;margin-bottom:2px
+}
+.drawer-nav a:hover,
+.drawer-nav button:hover{background:var(--surface-2);color:var(--text)}
+.drawer-nav a .dico,
+.drawer-nav button .dico{
+  width:38px;height:38px;border-radius:11px;flex:none;
+  display:grid;place-items:center;
+  background:var(--grad-soft);border:1px solid var(--line);color:var(--blue-2)
+}
+.drawer-divider{height:1px;background:var(--line);margin:8px 2px}
+
+.drawer-footer{
+  padding:16px 20px;border-top:1px solid var(--line);
+  font-size:.8rem;color:var(--muted-2);text-align:center
+}
+.drawer-footer b{color:var(--emerald)}
+
+/* ============================================================
+   HERO + SITE CARDS + LOGO CENTRAL 3D
+   ============================================================ */
+.hero{padding:74px 0 30px;text-align:center}
+
+/* ── LOGO CENTRAL 3D ── */
+.logo-central-wrapper{
+  display:flex;justify-content:center;align-items:center;
+  margin-bottom:30px;
+}
+.logo-3d-container{
+  position:relative;
+  width:clamp(180px, 30vw, 260px);
+  height:clamp(180px, 30vw, 260px);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+/* Anel giratório 3D */
+.ring-3d{
+  position:absolute;
+  inset:-12px;
+  border-radius:50%;
+  background:conic-gradient(from 0deg, 
+    #1D4ED8 0%, #3B82F6 20%, #38BDF8 40%, 
+    #FBBF24 60%, #F59E0B 80%, #1D4ED8 100%);
+  animation:spinRing 5s linear infinite;
+  filter:drop-shadow(0 0 20px rgba(59,130,246,.8));
+  z-index:0;
+}
+.ring-3d::after{
+  content:"";
+  position:absolute;
+  inset:6px;
+  border-radius:50%;
+  background:var(--bg);
+  z-index:1;
+}
+/* Efeito de brilho externo */
+.glow-ring{
+  position:absolute;
+  inset:-20px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(59,130,246,.3), transparent 70%);
+  filter:blur(18px);
+  z-index:0;
+  animation:pulseGlow 3s ease-in-out infinite;
+}
+@keyframes spinRing{
+  to{transform:rotate(360deg)}
+}
+@keyframes pulseGlow{
+  0%,100%{opacity:.5;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.08)}
+}
+.logo-3d-inner{
+  position:relative;
+  z-index:2;
+  width:80%;
+  height:80%;
+  border-radius:50%;
+  background:radial-gradient(circle at 30% 30%, #1a2448, #0b1024);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 0 40px rgba(59,130,246,.4);
+}
+.logo-3d-inner svg{
+  width:70%;
+  height:70%;
+}
+
+.eyebrow{
+  display:inline-flex;align-items:center;gap:9px;
+  font-size:.78rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--blue-2);padding:7px 15px;
+  border:1px solid var(--line);border-radius:99px;background:var(--surface);margin-bottom:26px
+}
 .dot{width:7px;height:7px;border-radius:99px;background:var(--emerald);box-shadow:0 0 12px var(--emerald);animation:pulse 2s infinite}
 @keyframes pulse{50%{opacity:.4}}
-.hero h1{font-size:clamp(2.5rem,6.4vw,4.4rem); font-weight:800}
-.hero h1 .gr{background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent}
-.hero p.sub{max-width:620px; margin:22px auto 0; color:var(--muted); font-size:clamp(1rem,2.2vw,1.18rem)}
+.hero h1{font-size:clamp(2.5rem,6.4vw,4.4rem);font-weight:800}
+.hero p.sub{max-width:620px;margin:22px auto 0;color:var(--muted);font-size:clamp(1rem,2.2vw,1.18rem)}
 
-/* ---------- Action cards ---------- */
-.cards{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin:54px 0 12px; perspective:1400px}
-@media(max-width:860px){.cards{grid-template-columns:1fr; max-width:430px; margin-inline:auto}}
-.card{position:relative; padding:30px 26px 28px; border-radius:var(--radius); cursor:pointer;
+.cards{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:20px;margin:54px 0 12px;perspective:1400px
+}
+@media(max-width:860px){.cards{grid-template-columns:1fr;max-width:430px;margin-inline:auto}}
+.card{
+  position:relative;padding:30px 26px 28px;border-radius:var(--radius);cursor:pointer;
   background:linear-gradient(165deg,var(--surface-2),rgba(255,255,255,.02));
-  border:1px solid var(--line); text-align:left; overflow:hidden;
-  transition:transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s, border-color .35s;
-  transform-style:preserve-3d; will-change:transform}
-.card::before{content:""; position:absolute; inset:0; border-radius:inherit; padding:1px;
-  background:var(--grad); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor; mask-composite:exclude; opacity:0; transition:.35s}
-.card::after{content:""; position:absolute; width:240px; height:240px; border-radius:50%;
-  background:radial-gradient(circle,rgba(139,92,246,.35),transparent 65%);
-  top:var(--my,30%); left:var(--mx,50%); transform:translate(-50%,-50%); opacity:0; transition:opacity .35s; pointer-events:none}
-.card:hover{border-color:transparent; box-shadow:0 30px 60px -24px rgba(99,102,241,.55)}
-.card:hover::before{opacity:1}
-.card:hover::after{opacity:1}
-.card .ic{width:54px; height:54px; border-radius:15px; display:grid; place-items:center; margin-bottom:20px;
-  background:var(--grad-soft); border:1px solid var(--line); color:var(--violet-2); transform:translateZ(40px)}
-.card h3{font-size:1.32rem; font-weight:700; margin-bottom:9px; transform:translateZ(30px)}
-.card p{color:var(--muted); font-size:.95rem; transform:translateZ(20px)}
-.card .go{display:inline-flex; align-items:center; gap:7px; margin-top:20px; font-weight:600; font-size:.9rem; color:var(--cyan); transform:translateZ(30px)}
+  border:1px solid var(--line);text-align:left;overflow:hidden;
+  transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s;
+  transform-style:preserve-3d
+}
+.card::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;
+  background:var(--grad);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:.35s
+}
+.card::after{
+  content:"";position:absolute;width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(59,130,246,.4),transparent 65%);
+  top:var(--my,30%);left:var(--mx,50%);transform:translate(-50%,-50%);
+  opacity:0;transition:opacity .35s;pointer-events:none
+}
+.card:hover{border-color:transparent;box-shadow:0 30px 60px -24px rgba(59,130,246,.6)}
+.card:hover::before,.card:hover::after{opacity:1}
+.card .ic{
+  width:54px;height:54px;border-radius:15px;display:grid;place-items:center;
+  margin-bottom:20px;background:var(--grad-soft);border:1px solid var(--line);
+  color:var(--blue-2);transform:translateZ(40px)
+}
+.card h3{font-size:1.32rem;font-weight:700;margin-bottom:9px;transform:translateZ(30px)}
+.card p{color:var(--muted);font-size:.95rem;transform:translateZ(20px)}
+.card .go{
+  display:inline-flex;align-items:center;gap:7px;margin-top:20px;
+  font-weight:600;font-size:.9rem;color:var(--sky);transform:translateZ(30px)
+}
 .card .go svg{transition:transform .3s}
 .card:hover .go svg{transform:translateX(5px)}
-.card .tag{position:absolute; top:18px; right:18px; font-size:.68rem; font-weight:600; letter-spacing:.04em; padding:4px 9px; border-radius:99px; background:rgba(52,211,153,.14); color:var(--emerald); border:1px solid rgba(52,211,153,.3)}
+.card .tag{
+  position:absolute;top:18px;right:18px;font-size:.68rem;font-weight:600;
+  padding:4px 9px;border-radius:99px;
+  background:rgba(52,211,153,.14);color:var(--emerald);border:1px solid rgba(52,211,153,.3)
+}
 
-/* ---------- Sections ---------- */
-section.block{padding:64px 0}
-.sec-head{display:flex; align-items:baseline; gap:14px; margin-bottom:24px}
-.sec-head .num{font-family:'Bricolage Grotesque'; font-weight:700; color:var(--muted-2); font-size:.9rem}
-.sec-head h2{font-size:clamp(1.6rem,4vw,2.3rem); font-weight:800}
-.panel{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:30px 28px}
-.about-grid{display:grid; grid-template-columns:1.4fr 1fr; gap:20px}
+section.block{padding:60px 0}
+.sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:24px}
+.sec-head .num{font-family:'Bricolage Grotesque';font-weight:700;color:var(--muted-2);font-size:.9rem}
+.sec-head h2{font-size:clamp(1.6rem,4vw,2.3rem);font-weight:800}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:30px 28px}
+.about-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:20px}
 @media(max-width:780px){.about-grid{grid-template-columns:1fr}}
-.about-grid p{color:var(--muted); white-space:pre-wrap}
-.week{background:linear-gradient(160deg,rgba(139,92,246,.12),rgba(34,211,238,.08)); border:1px solid var(--line); border-radius:var(--radius); padding:28px}
-.week .label{display:flex; align-items:center; gap:9px; font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--cyan); font-weight:600; margin-bottom:14px}
-.week p{white-space:pre-wrap}
-.feature-list{list-style:none; margin-top:18px; display:grid; gap:11px}
-.feature-list li{display:flex; gap:11px; align-items:flex-start; color:var(--muted); font-size:.95rem}
-.feature-list svg{flex:none; margin-top:3px; color:var(--emerald)}
+.aboutText,.weekText{white-space:pre-wrap}
+.about-grid .aboutText{color:var(--muted)}
+.week{
+  background:linear-gradient(160deg,rgba(59,130,246,.12),rgba(56,189,248,.08));
+  border:1px solid var(--line);border-radius:var(--radius);padding:28px
+}
+.week .label{
+  display:flex;align-items:center;gap:9px;font-size:.78rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--sky);font-weight:600;margin-bottom:14px
+}
+.feature-list{list-style:none;margin-top:18px;display:grid;gap:11px}
+.feature-list li{display:flex;gap:11px;align-items:flex-start;color:var(--muted);font-size:.95rem}
+.feature-list svg{flex:none;margin-top:3px;color:var(--emerald)}
 
-/* ---------- Footer ---------- */
-footer{border-top:1px solid var(--line); padding:34px 0; margin-top:30px}
-.foot{display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between}
-.credit{font-size:.85rem; color:var(--muted-2)}
-.credit b{color:var(--emerald); font-weight:600}
+footer{border-top:1px solid var(--line);padding:34px 0;margin-top:30px}
+.foot{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.credit{font-size:.85rem;color:var(--muted-2)}
+.credit b{color:var(--emerald);font-weight:600}
 .foot .brand{font-size:1rem}
 
-/* ---------- Buttons ---------- */
-.btn{display:inline-flex; align-items:center; justify-content:center; gap:9px; cursor:pointer;
-  font-family:'Inter'; font-weight:600; font-size:.97rem; padding:14px 22px; border-radius:13px; border:none;
-  color:#fff; position:relative; overflow:hidden; transition:transform .2s, box-shadow .3s; -webkit-tap-highlight-color:transparent}
-.btn-primary{background:var(--grad); background-size:200% 200%; box-shadow:0 12px 30px -10px rgba(99,102,241,.7); animation:flow 6s ease infinite}
+/* ============================================================
+   APP VIEW (com logo central 3D)
+   ============================================================ */
+#appView{padding:0 0 80px}
+#appView-inner{max-width:520px;margin:0 auto;padding:0 18px}
+.app-hero{text-align:center;padding:40px 0 20px}
+.app-hero .hi{font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-2);font-weight:600}
+.app-hero h1{font-size:clamp(1.9rem,8vw,2.6rem);font-weight:800;margin-top:10px}
+.app-hero p{color:var(--muted);margin-top:10px}
+
+.appcards{display:flex;flex-direction:column;gap:26px;margin-top:30px;perspective:1600px}
+.appcard{position:relative;height:150px;border-radius:26px;cursor:pointer}
+.appcard .flip{position:absolute;inset:0;transform-style:preserve-3d}
+.flip-inner{
+  position:relative;width:100%;height:100%;
+  transition:transform .8s cubic-bezier(.4,.15,.2,1);
+  transform-style:preserve-3d
+}
+.flip-inner.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:26px}
+.face.front{display:grid;place-items:center;overflow:visible}
+.face.back{
+  transform:rotateY(180deg);
+  background:linear-gradient(170deg,#0f1736,#0a0f24);
+  border:1px solid var(--line);overflow:hidden;display:flex;flex-direction:column
+}
+.front .clip{position:absolute;inset:0;border-radius:26px;overflow:hidden;z-index:1}
+.front .content{
+  position:absolute;inset:3px;border-radius:23px;
+  background:linear-gradient(165deg,#101a3c,#0b1126);
+  z-index:2;display:flex;align-items:center;gap:18px;padding:0 24px
+}
+.front .content .ic{
+  width:60px;height:60px;flex:none;border-radius:17px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,rgba(59,130,246,.25),rgba(56,189,248,.15));
+  border:1px solid rgba(96,165,250,.4);color:var(--ice);
+  box-shadow:0 0 24px rgba(59,130,246,.35) inset
+}
+.front .content .tx h3{font-size:1.3rem;font-weight:700}
+.front .content .tx p{font-size:.86rem;color:var(--muted);margin-top:3px}
+.front .content .arr{margin-left:auto;color:var(--sky)}
+
+/* card open/expanded */
+.appcard.open{
+  position:fixed;inset:14px;max-width:560px;margin:auto;
+  height:auto;min-height:0;z-index:75;
+  animation:jump .55s cubic-bezier(.2,1.3,.4,1)
+}
+@keyframes jump{0%{transform:scale(.96)}45%{transform:scale(1.03)}100%{transform:scale(1)}}
+.appcard.open .face,.appcard.open .flip,.appcard.open .flip-inner{position:absolute;inset:0;height:100%}
+.appcard.open .flip{height:100%}
+.back .bk-head{
+  position:sticky;top:0;
+  display:flex;align-items:center;gap:12px;padding:18px 20px 14px;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#0f1736,rgba(15,23,54,.4));
+  backdrop-filter:blur(4px);z-index:3
+}
+.back .bk-head h3{font-size:1.2rem;font-weight:700}
+.back .bk-head .bk-sub{font-size:.8rem;color:var(--muted);font-weight:400}
+.back .bk-body{padding:6px 20px 24px;overflow-y:auto;flex:1}
+.bk-back{
+  width:36px;height:36px;flex:none;border-radius:10px;
+  border:1px solid var(--line);background:var(--surface);
+  color:var(--muted);cursor:pointer;display:grid;place-items:center
+}
+.bk-back:hover{color:var(--text)}
+#appscrim{
+  position:fixed;inset:0;z-index:70;
+  background:rgba(5,7,16,.72);backdrop-filter:blur(6px);display:none
+}
+#appscrim.show{display:block}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  cursor:pointer;font-family:'Inter';font-weight:600;font-size:.97rem;
+  padding:14px 22px;border-radius:13px;border:none;color:#fff;
+  position:relative;overflow:hidden;
+  transition:transform .2s,box-shadow .3s;
+  -webkit-tap-highlight-color:transparent
+}
+.btn-primary{
+  background:var(--grad);background-size:200% 200%;
+  box-shadow:0 12px 30px -10px rgba(59,130,246,.75);
+  animation:flow 6s ease infinite
+}
 @keyframes flow{50%{background-position:100% 50%}}
-.btn-primary:hover{transform:translateY(-2px); box-shadow:0 18px 38px -10px rgba(99,102,241,.85)}
-.btn-primary::after{content:""; position:absolute; top:0; left:-120%; width:60%; height:100%;
-  background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent); transform:skewX(-18deg); transition:left .6s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 38px -10px rgba(59,130,246,.9)}
+.btn-primary::after{
+  content:"";position:absolute;top:0;left:-120%;width:60%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);
+  transform:skewX(-18deg);transition:left .6s
+}
 .btn-primary:hover::after{left:140%}
-.btn-wa{background:#1faa55; box-shadow:0 12px 30px -10px rgba(31,170,85,.7)}
-.btn-wa:hover{transform:translateY(-2px); background:#23bd60}
-.btn-ghost{background:var(--surface-2); color:var(--text); border:1px solid var(--line); box-shadow:none}
+.btn-wa{background:#1faa55;box-shadow:0 12px 30px -10px rgba(31,170,85,.7)}
+.btn-wa:hover{transform:translateY(-2px);background:#23bd60}
+.btn-ghost{background:var(--surface-2);color:var(--text);border:1px solid var(--line);box-shadow:none}
 .btn-ghost:hover{background:rgba(255,255,255,.12)}
-.btn:disabled{opacity:.55; cursor:not-allowed; transform:none}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
 .btn.full{width:100%}
 
-/* ---------- Modal ---------- */
-.scrim{position:fixed; inset:0; z-index:60; background:rgba(5,7,16,.7); backdrop-filter:blur(6px);
-  display:none; align-items:flex-end; justify-content:center; padding:0}
+/* ============================================================
+   MODAL (site)
+   ============================================================ */
+.scrim{
+  position:fixed;inset:0;z-index:60;
+  background:rgba(5,7,16,.7);backdrop-filter:blur(6px);
+  display:none;align-items:flex-end;justify-content:center
+}
 .scrim.show{display:flex}
-@media(min-width:720px){.scrim{align-items:center; padding:24px}}
-.modal{width:100%; max-width:560px; max-height:92vh; overflow-y:auto; background:linear-gradient(180deg,#141a35,#0e1228);
-  border:1px solid var(--line); border-radius:24px 24px 0 0; box-shadow:var(--shadow);
-  transform:translateY(30px); opacity:0; transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .3s}
+@media(min-width:720px){.scrim{align-items:center;padding:24px}}
+.modal{
+  width:100%;max-width:560px;max-height:92vh;overflow-y:auto;
+  background:linear-gradient(180deg,#101736,#0b1024);
+  border:1px solid var(--line);border-radius:24px 24px 0 0;
+  box-shadow:var(--shadow);
+  transform:translateY(30px);opacity:0;
+  transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .3s
+}
 @media(min-width:720px){.modal{border-radius:24px}}
-.scrim.show .modal{transform:translateY(0); opacity:1}
-.modal-head{position:sticky; top:0; display:flex; align-items:center; justify-content:space-between; gap:12px;
-  padding:22px 24px 16px; background:linear-gradient(180deg,#141a35,rgba(20,26,53,.0)); backdrop-filter:blur(4px); z-index:2}
-.modal-head h3{font-size:1.35rem; font-weight:700}
-.modal-head .ms{font-size:.85rem; color:var(--muted); margin-top:3px; font-family:'Inter'; font-weight:400; letter-spacing:0}
-.x{width:36px; height:36px; flex:none; border-radius:10px; border:1px solid var(--line); background:var(--surface); color:var(--muted); cursor:pointer; font-size:1.2rem; display:grid; place-items:center; transition:.2s}
-.x:hover{color:var(--text); background:var(--surface-2)}
+.scrim.show .modal{transform:translateY(0);opacity:1}
+.modal-head{
+  position:sticky;top:0;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:22px 24px 16px;
+  background:linear-gradient(180deg,#101736,rgba(16,23,54,0));
+  backdrop-filter:blur(4px);z-index:2
+}
+.modal-head h3{font-size:1.35rem;font-weight:700}
+.modal-head .ms{font-size:.85rem;color:var(--muted);margin-top:3px;font-weight:400}
+.x{
+  width:36px;height:36px;flex:none;border-radius:10px;
+  border:1px solid var(--line);background:var(--surface);
+  color:var(--muted);cursor:pointer;font-size:1.2rem;
+  display:grid;place-items:center;transition:.2s
+}
+.x:hover{color:var(--text);background:var(--surface-2)}
 .modal-body{padding:6px 24px 26px}
 
-/* ---------- Forms ---------- */
+/* ============================================================
+   FORMS
+   ============================================================ */
 .field{margin-bottom:15px}
-.field label{display:block; font-size:.85rem; font-weight:600; color:var(--muted); margin-bottom:7px}
-.field label .req{color:var(--violet-2)}
-input,select,textarea{width:100%; font-family:'Inter'; font-size:.97rem; color:var(--text);
-  background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:12px; padding:12px 14px; transition:.2s}
-textarea{resize:vertical; min-height:92px}
-input:focus,select:focus,textarea:focus{outline:none; border-color:var(--violet); background:rgba(139,92,246,.08); box-shadow:0 0 0 3px rgba(139,92,246,.18)}
+.field label{display:block;font-size:.85rem;font-weight:600;color:var(--muted);margin-bottom:7px}
+.field label .req{color:var(--blue-2)}
+input,select,textarea{
+  width:100%;font-family:'Inter';font-size:.97rem;color:var(--text);
+  background:rgba(255,255,255,.04);border:1px solid var(--line);
+  border-radius:12px;padding:12px 14px;transition:.2s
+}
+textarea{resize:vertical;min-height:92px}
+input:focus,select:focus,textarea:focus{
+  outline:none;border-color:var(--blue);
+  background:rgba(59,130,246,.09);
+  box-shadow:0 0 0 3px rgba(59,130,246,.2)
+}
 input::placeholder,textarea::placeholder{color:var(--muted-2)}
-select option{background:#141a35}
-.row2{display:grid; grid-template-columns:1fr 1fr; gap:13px}
+select option{background:#101736}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
 @media(max-width:520px){.row2{grid-template-columns:1fr}}
-.seg{display:flex; gap:8px; background:var(--surface); border:1px solid var(--line); border-radius:13px; padding:5px; margin-bottom:20px}
-.seg button{flex:1; padding:11px; border:none; background:transparent; color:var(--muted); font-family:'Inter'; font-weight:600; font-size:.92rem; border-radius:9px; cursor:pointer; transition:.2s}
-.seg button.on{background:var(--grad); color:#fff; box-shadow:0 6px 16px -6px rgba(99,102,241,.7)}
 
-/* file drop */
-.drop{border:1.5px dashed var(--line); border-radius:14px; padding:26px 18px; text-align:center; cursor:pointer; transition:.2s; color:var(--muted)}
-.drop:hover,.drop.over{border-color:var(--violet); background:rgba(139,92,246,.07); color:var(--text)}
-.drop svg{margin-bottom:8px; color:var(--violet-2)}
+.seg{
+  display:flex;gap:8px;background:var(--surface);border:1px solid var(--line);
+  border-radius:13px;padding:5px;margin-bottom:20px
+}
+.seg button{
+  flex:1;padding:11px;border:none;background:transparent;
+  color:var(--muted);font-family:'Inter';font-weight:600;font-size:.92rem;
+  border-radius:9px;cursor:pointer;transition:.2s
+}
+.seg button.on{background:var(--grad);color:#fff;box-shadow:0 6px 16px -6px rgba(59,130,246,.7)}
+
+/* upload area */
+.drop{
+  border:1.5px dashed var(--line);border-radius:14px;
+  padding:26px 18px;text-align:center;cursor:pointer;transition:.2s;color:var(--muted)
+}
+.drop:hover,.drop.over{border-color:var(--blue);background:rgba(59,130,246,.08);color:var(--text)}
+.drop svg{margin-bottom:8px;color:var(--blue-2)}
 .drop b{color:var(--text)}
-.filechip{display:none; align-items:center; gap:10px; margin-top:12px; padding:11px 14px; background:rgba(52,211,153,.1); border:1px solid rgba(52,211,153,.3); border-radius:12px; font-size:.9rem}
-.filechip.show{display:flex}
-.filechip .rm{margin-left:auto; cursor:pointer; color:var(--muted)}
 
-/* package box */
-.pkg{background:linear-gradient(160deg,rgba(139,92,246,.14),rgba(34,211,238,.08)); border:1px solid var(--line); border-radius:16px; padding:20px; margin-bottom:20px}
-.pkg .price{font-family:'Bricolage Grotesque'; font-size:2.1rem; font-weight:800; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent}
-.pkg .meta{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px}
-.pill{font-size:.8rem; padding:5px 11px; border-radius:99px; background:var(--surface-2); border:1px solid var(--line); color:var(--muted)}
+/* ── BARRA DE PROGRESSO DE UPLOAD ── */
+.upload-wrap{margin-top:12px}
+.upload-status{
+  display:none;align-items:center;gap:10px;
+  padding:12px 14px;border-radius:12px;
+  background:rgba(255,255,255,.04);border:1px solid var(--line);
+  font-size:.88rem
+}
+.upload-status.show{display:flex}
+.upload-status .uname{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+.upload-status .uperc{font-weight:700;color:var(--sky);min-width:38px;text-align:right}
+.upload-status .urm{
+  width:24px;height:24px;flex:none;border-radius:7px;border:1px solid var(--line);
+  background:var(--surface);color:var(--muted);cursor:pointer;
+  display:grid;place-items:center;font-size:.85rem;line-height:1;transition:.2s
+}
+.upload-status .urm:hover{color:#ff8a8a;border-color:rgba(255,138,138,.4)}
+.prog-bar-wrap{
+  width:100%;height:5px;background:rgba(255,255,255,.08);
+  border-radius:99px;margin-top:8px;overflow:hidden
+}
+.prog-bar{
+  height:100%;border-radius:99px;width:0%;
+  background:var(--grad);transition:width .2s linear
+}
+.prog-done .prog-bar{background:linear-gradient(90deg,#34D399,#10b981)}
+
+/* filechip legado (mantido como fallback) */
+.filechip{display:none;align-items:center;gap:10px;margin-top:12px;padding:11px 14px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);border-radius:12px;font-size:.9rem}
+.filechip.show{display:flex}
+.filechip .rm{margin-left:auto;cursor:pointer;color:var(--muted)}
+
+.pkg{
+  background:linear-gradient(160deg,rgba(59,130,246,.15),rgba(56,189,248,.08));
+  border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:20px
+}
+.pkg .price{font-family:'Bricolage Grotesque';font-size:2.1rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pkg .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.pill{font-size:.8rem;padding:5px 11px;border-radius:99px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted)}
 .pill b{color:var(--text)}
-.pay-note{display:flex; gap:11px; align-items:flex-start; margin-top:14px; font-size:.88rem; color:var(--muted)}
-.pay-note svg{flex:none; margin-top:2px; color:var(--cyan)}
+.pay-note{display:flex;gap:11px;align-items:flex-start;margin-top:14px;font-size:.88rem;color:var(--muted)}
+.pay-note svg{flex:none;margin-top:2px;color:var(--sky)}
 
 /* success */
-.done{text-align:center; padding:18px 6px 8px}
-.done .check{width:74px; height:74px; margin:0 auto 18px; border-radius:50%; display:grid; place-items:center; background:rgba(52,211,153,.14); border:1px solid rgba(52,211,153,.4); color:var(--emerald); animation:pop .45s cubic-bezier(.2,1.4,.4,1)}
-@keyframes pop{from{transform:scale(.4); opacity:0}}
-.done h3{font-size:1.5rem; margin-bottom:8px}
-.done p{color:var(--muted); margin-bottom:22px}
+.done{text-align:center;padding:18px 6px 8px}
+.done .check{
+  width:74px;height:74px;margin:0 auto 18px;border-radius:50%;
+  display:grid;place-items:center;
+  background:rgba(52,211,153,.14);border:1px solid rgba(52,211,153,.4);
+  color:var(--emerald);animation:pop .45s cubic-bezier(.2,1.4,.4,1)
+}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+.done h3{font-size:1.5rem;margin-bottom:8px}
+.done p{color:var(--muted);margin-bottom:22px}
 
-/* admin */
-.tabs{display:flex; gap:6px; margin-bottom:20px; border-bottom:1px solid var(--line)}
-.tabs button{padding:11px 14px; background:none; border:none; color:var(--muted); font-family:'Inter'; font-weight:600; font-size:.9rem; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px}
-.tabs button.on{color:var(--text); border-bottom-color:var(--violet)}
-.tabpane{display:none} .tabpane.on{display:block}
-.priceItem{display:flex; gap:9px; margin-bottom:9px}
-.priceItem input{flex:1}
-.priceItem .v{max-width:130px}
-.priceItem .del{flex:none; width:44px; border:1px solid var(--line); background:var(--surface); border-radius:11px; color:#ff7a7a; cursor:pointer}
-.recv{max-height:330px; overflow-y:auto}
-.recv .item{padding:13px 15px; border:1px solid var(--line); border-radius:13px; margin-bottom:9px; background:var(--surface)}
-.recv .item .t{font-weight:600; font-size:.95rem; display:flex; justify-content:space-between; gap:10px}
-.recv .item .t .when{font-size:.75rem; color:var(--muted-2); font-weight:400}
-.recv .item .d{font-size:.85rem; color:var(--muted); margin-top:4px}
-.empty{text-align:center; color:var(--muted-2); padding:30px 10px; font-size:.92rem}
-.subtabs{display:flex; gap:7px; margin-bottom:14px; flex-wrap:wrap}
-.subtabs button{padding:7px 13px; border-radius:99px; border:1px solid var(--line); background:var(--surface); color:var(--muted); font-family:'Inter'; font-weight:600; font-size:.82rem; cursor:pointer}
-.subtabs button.on{background:var(--grad); color:#fff; border-color:transparent}
+/* tabs */
+.tabs{display:flex;gap:6px;margin-bottom:20px;border-bottom:1px solid var(--line)}
+.tabs button{
+  padding:11px 14px;background:none;border:none;color:var(--muted);
+  font-family:'Inter';font-weight:600;font-size:.9rem;cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-1px
+}
+.tabs button.on{color:var(--text);border-bottom-color:var(--blue)}
+.tabpane{display:none}.tabpane.on{display:block}
+.priceItem{display:flex;gap:9px;margin-bottom:9px}
+.priceItem input{flex:1}.priceItem .v{max-width:130px}
+.priceItem .del{flex:none;width:44px;border:1px solid var(--line);background:var(--surface);border-radius:11px;color:#ff7a7a;cursor:pointer}
+.recv{max-height:330px;overflow-y:auto}
+.recv .item{padding:13px 15px;border:1px solid var(--line);border-radius:13px;margin-bottom:9px;background:var(--surface)}
+.recv .item .t{font-weight:600;font-size:.95rem;display:flex;justify-content:space-between;gap:10px}
+.recv .item .t .when{font-size:.75rem;color:var(--muted-2);font-weight:400}
+.recv .item .d{font-size:.85rem;color:var(--muted);margin-top:4px}
+.empty{text-align:center;color:var(--muted-2);padding:30px 10px;font-size:.92rem}
+.subtabs{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+.subtabs button{padding:7px 13px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-family:'Inter';font-weight:600;font-size:.82rem;cursor:pointer}
+.subtabs button.on{background:var(--grad);color:#fff;border-color:transparent}
 
-/* toast */
-#toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(20px); z-index:80;
-  background:#0e1228; border:1px solid var(--line); color:var(--text); padding:13px 20px; border-radius:13px;
-  box-shadow:var(--shadow); font-size:.92rem; opacity:0; pointer-events:none; transition:.3s; display:flex; gap:10px; align-items:center; max-width:90vw}
-#toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+/* ============================================================
+   TOAST
+   ============================================================ */
+#toast{
+  position:fixed;left:50%;bottom:26px;
+  transform:translateX(-50%) translateY(20px);z-index:120;
+  background:#0b1024;border:1px solid var(--line);
+  color:var(--text);padding:13px 20px;border-radius:13px;
+  box-shadow:var(--shadow);font-size:.92rem;
+  opacity:0;pointer-events:none;transition:.3s;
+  display:flex;gap:10px;align-items:center;max-width:90vw;
+  white-space:nowrap
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.err{border-color:rgba(255,120,120,.5)}
-#toast.ok svg{color:var(--emerald)} #toast.err svg{color:#ff8a8a}
+#toast.ok svg{color:var(--emerald)}#toast.err svg{color:#ff8a8a}
 
-.spinner{width:17px;height:17px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
-@keyframes spin{to{transform:rotate(360deg)}}
+/* ============================================================
+   SPINNER
+   ============================================================ */
+.spinner{
+  width:17px;height:17px;
+  border:2px solid rgba(255,255,255,.35);border-top-color:#fff;
+  border-radius:50%;animation:rot .7s linear infinite;display:inline-block
+}
+@keyframes rot{to{transform:rotate(360deg)}}
 
-/* install banner */
-#install{position:fixed; left:16px; right:16px; bottom:16px; z-index:50; display:none; align-items:center; gap:13px;
-  background:#141a35; border:1px solid var(--line); border-radius:16px; padding:13px 15px; box-shadow:var(--shadow); max-width:430px; margin:0 auto}
-#install.show{display:flex}
-#install .ic{width:40px;height:40px;flex:none}
-#install p{font-size:.85rem; color:var(--muted)} #install b{color:var(--text); display:block; font-size:.92rem}
-#install .btn{padding:10px 15px; font-size:.85rem}
-#install .close{margin-left:4px; color:var(--muted-2); cursor:pointer; background:none; border:none; font-size:1.3rem}
+/* ============================================================
+   BOTÃO WHATSAPP FLUTUANTE
+   ============================================================ */
+#waFab{
+  position:fixed;bottom:24px;right:22px;z-index:50;
+  display:flex;align-items:center;gap:0;
+  cursor:pointer;
+  filter:drop-shadow(0 8px 24px rgba(37,211,102,.45));
+  transition:filter .25s,transform .25s
+}
+#waFab:hover{filter:drop-shadow(0 12px 32px rgba(37,211,102,.7));transform:scale(1.06)}
+#waFab .fab-bubble{
+  max-width:0;overflow:hidden;
+  background:#1a2e1c;border:1px solid rgba(37,211,102,.35);
+  border-radius:14px 0 0 14px;
+  padding:0;height:52px;
+  display:flex;align-items:center;
+  white-space:nowrap;transition:max-width .4s cubic-bezier(.2,.8,.2,1),padding .3s
+}
+#waFab:hover .fab-bubble,#waFab.peek .fab-bubble{max-width:240px;padding:0 14px 0 16px}
+#waFab .fab-bubble .fabtx{font-size:.82rem;font-weight:600;color:#a7e9be;line-height:1.25}
+#waFab .fab-bubble .fabtx span{display:block;font-size:.72rem;color:rgba(167,233,190,.65);margin-top:1px}
+#waFab .fab-btn{
+  width:54px;height:54px;border-radius:16px;flex:none;
+  background:var(--wa);
+  display:grid;place-items:center;color:#fff;
+  box-shadow:0 4px 16px rgba(37,211,102,.4)
+}
 
-@media(prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-
-<!-- connection network background -->
 <canvas id="net"></canvas>
-
 <svg width="0" height="0" style="position:absolute"><defs>
-<linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0" stop-color="#8B5CF6"/><stop offset="1" stop-color="#22D3EE"/>
-</linearGradient></defs></svg>
+  <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#2563EB"/>
+    <stop offset="1" stop-color="#38BDF8"/>
+  </linearGradient>
+</defs></svg>
 
-<header>
-  <div class="wrap bar">
-    <a href="#top" class="brand">
-      <svg class="logo" viewBox="0 0 40 40" fill="none">
-        <circle cx="11" cy="12" r="6" stroke="url(#lg)" stroke-width="2.4"/>
-        <circle cx="29" cy="28" r="6" stroke="url(#lg)" stroke-width="2.4"/>
-        <path d="M15 16.5 L25 23.5" stroke="url(#lg)" stroke-width="2.4" stroke-linecap="round"/>
-        <circle cx="11" cy="12" r="2" fill="#A78BFA"/><circle cx="29" cy="28" r="2" fill="#22D3EE"/>
-      </svg>
-      Conecta<b>RH</b>
-    </a>
-    <nav>
-      <a href="#sobre" class="navlink">Sobre</a>
-      <a href="#atualizacao" class="navlink">Atualização</a>
-      <div class="gear" title="Painel da empresa" onclick="openAdmin()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      </div>
-    </nav>
-  </div>
-</header>
-
-<main id="top">
-  <section class="hero wrap">
-    <span class="eyebrow"><span class="dot"></span> Recrutamento &amp; seleção</span>
-    <h1>O elo certo entre<br><span class="gr">talento e oportunidade.</span></h1>
-    <p class="sub">Cadastre seu currículo, contrate um pacote de candidatos selecionados ou monte um processo seletivo completo. Escolha por onde começar.</p>
-
-    <div class="cards" id="cards">
-      <!-- Candidato -->
-      <div class="card" tabindex="0" role="button" onclick="openCand()" onkeydown="if(event.key==='Enter')openCand()">
-        <span class="tag">Grátis</span>
-        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-        <h3>Sou candidato</h3>
-        <p>Preencha seus dados ou anexe seu currículo em PDF e entre no nosso banco de talentos.</p>
-        <span class="go">Cadastrar currículo <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-      </div>
-      <!-- Cliente -->
-      <div class="card" tabindex="0" role="button" onclick="openCliente()" onkeydown="if(event.key==='Enter')openCliente()">
-        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/><path d="M9 9v.01M9 13v.01M9 17v.01"/></svg></div>
-        <h3>Sou empresa</h3>
-        <p>Pacote de 10 currículos selecionados pro perfil que você precisa. Entrega em até 2 dias.</p>
-        <span class="go">Contratar pacote <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-      </div>
-      <!-- Vagas -->
-      <div class="card" tabindex="0" role="button" onclick="openVagas()" onkeydown="if(event.key==='Enter')openVagas()">
-        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 5.4L20 8l-4 4 1 6-5-2.8L7 18l1-6-4-4 5.6-.6L12 2z"/></svg></div>
-        <h3>Vagas personalizadas</h3>
-        <p>Captação, integração, recolhimento de documentos e entrevistas. Um processo sob medida.</p>
-        <span class="go">Solicitar orçamento <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+<!-- ================================================================
+     CHOOSER
+     ================================================================ -->
+<div id="chooser">
+  <svg class="logo-xl" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="100" cy="100" r="85" stroke="url(#lg)" stroke-width="8"/>
+    <text x="48" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="62" font-weight="800" fill="url(#lg)">K</text>
+    <text x="94" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="42" font-weight="700" fill="#60A5FA">R</text>
+    <text x="128" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="42" font-weight="700" fill="#38BDF8">H</text>
+    <text x="44" y="135" font-family="'Inter', sans-serif" font-size="18" font-weight="700" fill="#9FB0D8" letter-spacing="3">KONECTA</text>
+    <text x="60" y="162" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#6E7CA8" letter-spacing="3">RHDIGITAL</text>
+  </svg>
+  <div><h1>Konecta<span class="gr">RH</span></h1><p>Como você quer entrar?</p></div>
+  <div class="choice-row">
+    <div class="choice" tabindex="0" role="button" onclick="enter('site')" onkeydown="if(event.key==='Enter')enter('site')">
+      <span class="glow-blur"></span>
+      <span class="clip"><span class="glow-spin"></span></span>
+      <div class="chinner">
+        <div class="chico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+        <div class="chttl">Versão Site</div>
+        <div class="chsub">Completo, pra navegador</div>
       </div>
     </div>
-  </section>
+    <div class="choice" tabindex="0" role="button" onclick="enter('app')" onkeydown="if(event.key==='Enter')enter('app')">
+      <span class="glow-blur"></span>
+      <span class="clip"><span class="glow-spin"></span></span>
+      <div class="chinner">
+        <div class="chico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg></div>
+        <div class="chttl">Versão App</div>
+        <div class="chsub">Botões grandes, na mão</div>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <section class="block wrap" id="sobre">
-    <div class="sec-head"><span class="num">01</span><h2>Sobre a ConectaRH</h2></div>
-    <div class="about-grid">
-      <div class="panel"><p id="aboutText">Carregando…</p></div>
-      <div class="panel">
-        <ul class="feature-list">
+<!-- ================================================================
+     SITE VIEW (com LOGO CENTRAL 3D)
+     ================================================================ -->
+<div id="siteView" class="hidden">
+  <header>
+    <div class="wrap bar">
+      <a href="#top" class="brand" onclick="goHome()">
+        <svg class="logo" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="70" stroke="url(#lg)" stroke-width="6"/>
+          <text x="55" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="48" font-weight="800" fill="url(#lg)">K</text>
+          <text x="92" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="32" font-weight="700" fill="#60A5FA">R</text>
+          <text x="118" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="32" font-weight="700" fill="#38BDF8">H</text>
+          <text x="50" y="128" font-family="'Inter', sans-serif" font-size="14" font-weight="600" fill="#9FB0D8" letter-spacing="2">KONECTA</text>
+        </svg>
+        <div class="brand-text">
+          <span class="name">Konecta<b>RH</b></span>
+          <span class="slogan">talento &amp; oportunidade</span>
+        </div>
+      </a>
+      <nav>
+        <a href="#sobre" class="navlink">Sobre</a>
+        <a href="#atualizacao" class="navlink">Atualização</a>
+        <button class="iconbtn" onclick="showChooser()" title="Trocar versão">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3"/></svg>App
+        </button>
+        <div class="iconbtn gear" title="Painel da empresa" onclick="openAdmin()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </div>
+      </nav>
+    </div>
+  </header>
+  <main id="top">
+    <section class="hero wrap">
+      <!-- LOGO CENTRAL 3D -->
+      <div class="logo-central-wrapper">
+        <div class="logo-3d-container">
+          <div class="ring-3d"></div>
+          <div class="glow-ring"></div>
+          <div class="logo-3d-inner">
+            <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="100" cy="100" r="70" stroke="url(#lg)" stroke-width="6"/>
+              <text x="55" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="48" font-weight="800" fill="url(#lg)">K</text>
+              <text x="92" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="32" font-weight="700" fill="#60A5FA">R</text>
+              <text x="118" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="32" font-weight="700" fill="#38BDF8">H</text>
+              <text x="50" y="128" font-family="'Inter', sans-serif" font-size="14" font-weight="600" fill="#9FB0D8" letter-spacing="2">KONECTA</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <span class="eyebrow"><span class="dot"></span> Recrutamento &amp; seleção</span>
+      <h1>O elo certo entre<br><span class="gr">talento e oportunidade.</span></h1>
+      <p class="sub">Cadastre seu currículo, contrate um pacote de candidatos selecionados ou monte um processo seletivo completo. Escolha por onde começar.</p>
+      <div class="cards" id="cards">
+        <div class="card" tabindex="0" role="button" onclick="openCand()" onkeydown="if(event.key==='Enter')openCand()">
+          <span class="tag">Grátis</span>
+          <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <h3>Sou candidato</h3>
+          <p>Preencha seus dados ou anexe seu currículo em PDF e entre no nosso banco de talentos.</p>
+          <span class="go">Cadastrar currículo <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+        <div class="card" tabindex="0" role="button" onclick="openCliente()" onkeydown="if(event.key==='Enter')openCliente()">
+          <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg></div>
+          <h3>Sou empresa</h3>
+          <p>Pacote de 10 currículos selecionados pro perfil que você precisa. Entrega em até 2 dias.</p>
+          <span class="go">Contratar pacote <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+        <div class="card" tabindex="0" role="button" onclick="openVagas()" onkeydown="if(event.key==='Enter')openVagas()">
+          <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 5.4L20 8l-4 4 1 6-5-2.8L7 18l1-6-4-4 5.6-.6L12 2z"/></svg></div>
+          <h3>Vagas personalizadas</h3>
+          <p>Captação, integração, recolhimento de documentos e entrevistas. Um processo sob medida.</p>
+          <span class="go">Solicitar orçamento <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </div>
+    </section>
+    <section class="block wrap" id="sobre">
+      <div class="sec-head"><span class="num">01</span><h2>Sobre a KonectaRH</h2></div>
+      <div class="about-grid">
+        <div class="panel"><p class="aboutText">Carregando…</p></div>
+        <div class="panel"><ul class="feature-list">
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg> Banco de talentos sempre atualizado</li>
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg> Triagem feita por gente que entende de gente</li>
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg> Entrega ágil: 10 currículos em até 2 dias</li>
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg> Processos completos sob medida</li>
-        </ul>
+        </ul></div>
       </div>
-    </div>
-  </section>
-
-  <section class="block wrap" id="atualizacao">
-    <div class="sec-head"><span class="num">02</span><h2>Atualização da semana</h2></div>
-    <div class="week">
-      <div class="label"><span class="dot"></span> Novidades</div>
-      <p id="weekText">Carregando…</p>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <div class="wrap foot">
-    <a href="#top" class="brand">
-      <svg class="logo" viewBox="0 0 40 40" fill="none"><circle cx="11" cy="12" r="6" stroke="url(#lg)" stroke-width="2.4"/><circle cx="29" cy="28" r="6" stroke="url(#lg)" stroke-width="2.4"/><path d="M15 16.5 L25 23.5" stroke="url(#lg)" stroke-width="2.4" stroke-linecap="round"/></svg>
-      Conecta<b>RH</b>
+    </section>
+    <section class="block wrap" id="atualizacao">
+      <div class="sec-head"><span class="num">02</span><h2>Atualização da semana</h2></div>
+      <div class="week">
+        <div class="label"><span class="dot"></span> Novidades</div>
+        <p class="weekText">Carregando…</p>
+      </div>
+    </section>
+  </main>
+  <footer><div class="wrap foot">
+    <a href="#top" class="brand" onclick="goHome()">
+      <svg class="logo" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="100" r="70" stroke="url(#lg)" stroke-width="6"/>
+        <text x="55" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="48" font-weight="800" fill="url(#lg)">K</text>
+        <text x="92" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="32" font-weight="700" fill="#60A5FA">R</text>
+        <text x="118" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="32" font-weight="700" fill="#38BDF8">H</text>
+        <text x="50" y="128" font-family="'Inter', sans-serif" font-size="14" font-weight="600" fill="#9FB0D8" letter-spacing="2">KONECTA</text>
+      </svg>
+      <div class="brand-text" style="font-size:1rem">
+        <span class="name">Konecta<b>RH</b></span>
+        <span class="slogan">talento &amp; oportunidade</span>
+      </div>
     </a>
     <span class="credit">Desenvolvido por <b>Heitor Serra Neto</b></span>
-  </div>
-</footer>
+  </div></footer>
+</div>
 
-<!-- ===================== MODAL SHELL ===================== -->
+<!-- ================================================================
+     APP VIEW (com LOGO CENTRAL 3D)
+     ================================================================ -->
+<div id="appView" class="hidden">
+  <header>
+    <div class="wrap bar" style="max-width:560px;margin:0 auto">
+      <a href="#" class="brand" onclick="goHome()">
+        <svg class="logo" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="70" stroke="url(#lg)" stroke-width="6"/>
+          <text x="55" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="48" font-weight="800" fill="url(#lg)">K</text>
+          <text x="92" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="32" font-weight="700" fill="#60A5FA">R</text>
+          <text x="118" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="32" font-weight="700" fill="#38BDF8">H</text>
+          <text x="50" y="128" font-family="'Inter', sans-serif" font-size="14" font-weight="600" fill="#9FB0D8" letter-spacing="2">KONECTA</text>
+        </svg>
+        <div class="brand-text">
+          <span class="name">Konecta<b>RH</b></span>
+          <span class="slogan">talento &amp; oportunidade</span>
+        </div>
+      </a>
+      <div class="hamburger" id="hamBtn" onclick="toggleDrawer()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- DRAWER -->
+  <div id="drawerScrim" onclick="closeDrawer()"></div>
+  <nav id="drawer" role="navigation" aria-label="Menu principal">
+    <div class="drawer-header">
+      <a href="#" class="brand" onclick="closeDrawer();goHome()">
+        <svg class="logo" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="70" stroke="url(#lg)" stroke-width="6"/>
+          <text x="55" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="48" font-weight="800" fill="url(#lg)">K</text>
+          <text x="92" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="32" font-weight="700" fill="#60A5FA">R</text>
+          <text x="118" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="32" font-weight="700" fill="#38BDF8">H</text>
+          <text x="50" y="128" font-family="'Inter', sans-serif" font-size="14" font-weight="600" fill="#9FB0D8" letter-spacing="2">KONECTA</text>
+        </svg>
+        <div class="brand-text">
+          <span class="name">Konecta<b>RH</b></span>
+          <span class="slogan">talento &amp; oportunidade</span>
+        </div>
+      </a>
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div class="drawer-nav">
+      <button onclick="drawerAbout()">
+        <span class="dico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16v.01"/></svg></span>
+        Sobre a KonectaRH
+      </button>
+      <button onclick="drawerWeek()">
+        <span class="dico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 5.4L20 8l-4 4 1 6-5-2.8L7 18l1-6-4-4 5.6-.6L12 2z"/></svg></span>
+        Atualização da semana
+      </button>
+      <div class="drawer-divider"></div>
+      <button onclick="drawerSite()">
+        <span class="dico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+        Versão completa (Site)
+      </button>
+      <div class="drawer-divider"></div>
+      <button onclick="drawerAdmin()">
+        <span class="dico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+        Painel da empresa
+      </button>
+    </div>
+    <div class="drawer-footer">Desenvolvido por <b>Heitor Serra Neto</b></div>
+  </nav>
+
+  <div id="appView-inner">
+    <div class="app-hero">
+      <!-- LOGO CENTRAL 3D (versão app) -->
+      <div class="logo-central-wrapper" style="margin-bottom:20px">
+        <div class="logo-3d-container" style="width:clamp(160px, 30vw, 220px);height:clamp(160px, 30vw, 220px)">
+          <div class="ring-3d"></div>
+          <div class="glow-ring"></div>
+          <div class="logo-3d-inner">
+            <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="100" cy="100" r="70" stroke="url(#lg)" stroke-width="6"/>
+              <text x="55" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="48" font-weight="800" fill="url(#lg)">K</text>
+              <text x="92" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="32" font-weight="700" fill="#60A5FA">R</text>
+              <text x="118" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="32" font-weight="700" fill="#38BDF8">H</text>
+              <text x="50" y="128" font-family="'Inter', sans-serif" font-size="14" font-weight="600" fill="#9FB0D8" letter-spacing="2">KONECTA</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="hi">Konecta<span class="gr">RH</span></div>
+      <h1>O que você<br>precisa hoje?</h1>
+      <p>Toque numa opção — ela vira e você preenche ali mesmo.</p>
+    </div>
+    <div class="appcards" id="appcards">
+      <!-- candidato -->
+      <div class="appcard" data-type="cand"><div class="flip"><div class="flip-inner">
+        <div class="face front" onclick="appOpen(this,'cand')">
+          <span class="glow-blur"></span><span class="clip"><span class="glow-spin"></span></span>
+          <div class="content">
+            <div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+            <div class="tx"><h3>Sou candidato</h3><p>Cadastre seu currículo</p></div>
+            <div class="arr"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+          </div>
+        </div>
+        <div class="face back"></div>
+      </div></div></div>
+
+      <!-- empresa -->
+      <div class="appcard" data-type="cli"><div class="flip"><div class="flip-inner">
+        <div class="face front" onclick="appOpen(this,'cli')">
+          <span class="glow-blur"></span><span class="clip"><span class="glow-spin"></span></span>
+          <div class="content">
+            <div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg></div>
+            <div class="tx"><h3>Sou empresa</h3><p>Pacote de 10 currículos</p></div>
+            <div class="arr"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+          </div>
+        </div>
+        <div class="face back"></div>
+      </div></div></div>
+
+      <!-- vagas -->
+      <div class="appcard" data-type="vag"><div class="flip"><div class="flip-inner">
+        <div class="face front" onclick="appOpen(this,'vag')">
+          <span class="glow-blur"></span><span class="clip"><span class="glow-spin"></span></span>
+          <div class="content">
+            <div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 5.4L20 8l-4 4 1 6-5-2.8L7 18l1-6-4-4 5.6-.6L12 2z"/></svg></div>
+            <div class="tx"><h3>Vagas personalizadas</h3><p>Processo completo sob medida</p></div>
+            <div class="arr"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+          </div>
+        </div>
+        <div class="face back"></div>
+      </div></div></div>
+    </div>
+
+    <section class="block" style="padding:48px 0 0">
+      <div class="sec-head"><span class="num">•</span><h2 style="font-size:1.5rem">Sobre a KonectaRH</h2></div>
+      <div class="panel"><p class="aboutText">Carregando…</p></div>
+      <div class="week" style="margin-top:18px">
+        <div class="label"><span class="dot"></span> Atualização da semana</div>
+        <p class="weekText">Carregando…</p>
+      </div>
+      <p class="credit" style="text-align:center;margin-top:34px">Desenvolvido por <b style="color:var(--emerald)">Heitor Serra Neto</b></p>
+    </section>
+  </div>
+</div>
+
+<!-- app card scrim -->
+<div id="appscrim" onclick="closeActive()"></div>
+
+<!-- ================================================================
+     MODAL SHELL (site)
+     ================================================================ -->
 <div class="scrim" id="scrim">
   <div class="modal" id="modal">
     <div class="modal-head">
@@ -347,86 +1024,172 @@ select option{background:#141a35}
   </div>
 </div>
 
-<!-- install banner -->
-<div id="install">
-  <svg class="ic" viewBox="0 0 40 40" fill="none"><circle cx="11" cy="12" r="6" stroke="url(#lg)" stroke-width="2.4"/><circle cx="29" cy="28" r="6" stroke="url(#lg)" stroke-width="2.4"/><path d="M15 16.5 L25 23.5" stroke="url(#lg)" stroke-width="2.4" stroke-linecap="round"/></svg>
-  <p><b>Instalar ConectaRH</b>Adicione na tela inicial e use como app.</p>
-  <button class="btn btn-primary" onclick="doInstall()">Instalar</button>
-  <button class="close" onclick="document.getElementById('install').classList.remove('show')">✕</button>
-</div>
+<!-- ================================================================
+     BOTÃO WHATSAPP FLUTUANTE
+     ================================================================ -->
+<a id="waFab" href="https://wa.me/5511930750048?text=Ol%C3%A1%2C+vim+pelo+KonectaRH+e+gostaria+de+mais+informa%C3%A7%C3%B5es!" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+  <div class="fab-bubble">
+    <div class="fabtx">Fale com a gente <span>Atendimento via WhatsApp</span></div>
+  </div>
+  <div class="fab-btn">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M.06 24l1.68-6.13A11.86 11.86 0 0 1 .12 11.9C.12 5.34 5.46 0 12.02 0a11.82 11.82 0 0 1 8.41 3.49 11.82 11.82 0 0 1 3.48 8.42c0 6.56-5.34 11.9-11.9 11.9a11.9 11.9 0 0 1-5.68-1.45L.06 24zM6.6 20.2l.36.21a9.86 9.86 0 0 0 5.04 1.38h.01c5.45 0 9.89-4.43 9.89-9.88a9.82 9.82 0 0 0-2.9-7A9.82 9.82 0 0 0 12.02 2c-5.46 0-9.9 4.43-9.9 9.88 0 1.87.53 3.7 1.51 5.28l.24.38-1 3.63 3.73-.97z"/><path d="M9.07 6.92c-.22-.5-.46-.51-.68-.52l-.58-.01c-.2 0-.53.08-.8.38s-1.05 1.03-1.05 2.5 1.08 2.9 1.23 3.1c.15.2 2.1 3.36 5.18 4.58 2.56 1.01 3.08.81 3.64.76.56-.05 1.8-.74 2.06-1.45.25-.7.25-1.31.18-1.44-.07-.12-.27-.2-.56-.35s-1.8-.89-2.07-.99c-.28-.1-.48-.15-.68.15-.2.3-.78.99-.95 1.19-.18.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.48-.88-.79-1.48-1.76-1.65-2.06-.18-.3-.02-.46.13-.6.13-.14.3-.35.45-.53.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53s-.66-1.62-.91-2.22z"/></svg>
+  </div>
+</a>
 
 <div id="toast"></div>
 
+<!-- ================================================================
+     JAVASCRIPT (TUDO MANTIDO, COM goHome() ADICIONADO)
+     ================================================================ -->
 <script>
-/* ============== Firebase ============== */
+/* ── Firebase ── */
 const firebaseConfig = {
-  apiKey: "AIzaSyAts9fsoZ_GrF3MRHDRlAw61Xti2uBkdnM",
-  authDomain: "staffcheck-d6f20.firebaseapp.com",
-  projectId: "staffcheck-d6f20",
-  storageBucket: "staffcheck-d6f20.firebasestorage.app",
-  messagingSenderId: "1055570421019",
-  appId: "1:1055570421019:web:7b5dcc564bfe1c30189fbe"
+  apiKey:"AIzaSyAts9fsoZ_GrF3MRHDRlAw61Xti2uBkdnM",
+  authDomain:"staffcheck-d6f20.firebaseapp.com",
+  projectId:"staffcheck-d6f20",
+  storageBucket:"staffcheck-d6f20.firebasestorage.app",
+  messagingSenderId:"1055570421019",
+  appId:"1:1055570421019:web:7b5dcc564bfe1c30189fbe"
 };
 let db=null, storage=null, fbReady=false;
 try{
   firebase.initializeApp(firebaseConfig);
-  db = firebase.firestore();
-  try{ storage = firebase.storage(); }catch(e){ storage=null; }
+  db=firebase.firestore();
+  try{ storage=firebase.storage(); }catch(e){ storage=null; }
   fbReady=true;
-}catch(e){ console.warn("Firebase indisponível:", e); }
+}catch(e){ console.warn("Firebase:",e); }
 
-const COL_CAND="conectarh_candidatos", COL_PED="conectarh_pedidos", COL_ORC="conectarh_orcamentos", COL_CFG="conectarh_config";
+const COL_CAND="conectarh_candidatos",
+      COL_PED="conectarh_pedidos",
+      COL_ORC="conectarh_orcamentos",
+      COL_CFG="conectarh_config";
 const WHATS="5511930750048";
-const ADMIN_PIN="conecta2025"; // PIN do painel da empresa
+const ADMIN_PIN="conecta2025";
+const AREAS=["Atendimento / Vendas","Administrativo","Financeiro","Logística / Estoque",
+             "Produção / Operacional","Limpeza / Serviços gerais","Cozinha / Alimentação",
+             "TI / Tecnologia","Saúde","Educação","Outra"];
 
-/* ============== Config (preços + textos) ============== */
-const defaultCfg = {
-  aboutText:"A ConectaRH nasceu pra simplificar a conexão entre quem procura uma oportunidade e quem procura a pessoa certa.\n\nUnimos um banco de talentos ativo a uma triagem cuidadosa, entregando currículos alinhados ao perfil de cada empresa — com agilidade e sem complicação.",
-  weekText:"Esta semana estamos com novas vagas em atendimento, administrativo e logística. Cadastre seu currículo pra ser considerado nas próximas seleções!",
-  packagePrice:"", // a cliente define no painel
-  packageLabel:"Pacote 10 currículos",
-  priceTable:[] // [{nome, valor}]
+/* ── safe storage ── */
+const store={
+  get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},
+  set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}
 };
-let cfg = {...defaultCfg};
 
+/* ── Config ── */
+const defaultCfg={
+  aboutText:"A KonectaRH nasceu pra simplificar a conexão entre quem procura uma oportunidade e quem procura a pessoa certa.\n\nUnimos um banco de talentos ativo a uma triagem cuidadosa, entregando currículos alinhados ao perfil de cada empresa — com agilidade e sem complicação.",
+  weekText:"Esta semana estamos com novas vagas em atendimento, administrativo e logística. Cadastre seu currículo pra ser considerado nas próximas seleções!",
+  packagePrice:"", packageLabel:"Pacote 10 currículos", priceTable:[]
+};
+let cfg={...defaultCfg};
 async function loadCfg(){
-  if(!fbReady){ applyCfg(); return; }
-  try{
-    const snap = await db.collection(COL_CFG).doc("main").get();
-    if(snap.exists) cfg = {...defaultCfg, ...snap.data()};
-  }catch(e){ console.warn("config:",e); }
+  if(fbReady){
+    try{
+      const s=await db.collection(COL_CFG).doc("main").get();
+      if(s.exists) cfg={...defaultCfg,...s.data()};
+    }catch(e){ console.warn("cfg",e); }
+  }
   applyCfg();
 }
 function applyCfg(){
-  document.getElementById("aboutText").textContent = cfg.aboutText || defaultCfg.aboutText;
-  document.getElementById("weekText").textContent  = cfg.weekText  || defaultCfg.weekText;
+  document.querySelectorAll(".aboutText").forEach(e=>e.textContent=cfg.aboutText||defaultCfg.aboutText);
+  document.querySelectorAll(".weekText").forEach(e=>e.textContent=cfg.weekText||defaultCfg.weekText);
 }
 async function saveCfg(){
   if(!fbReady) throw new Error("offline");
-  cfg.updatedAt = new Date().toISOString();
-  await db.collection(COL_CFG).doc("main").set(cfg, {merge:true});
+  cfg.updatedAt=new Date().toISOString();
+  await db.collection(COL_CFG).doc("main").set(cfg,{merge:true});
 }
 
-/* ============== Helpers ============== */
+/* ── Helpers ── */
 const $=s=>document.querySelector(s);
 const esc=s=>(s||"").replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
-function brl(v){ if(v===""||v==null) return ""; const n=Number(String(v).replace(/[^\d,.-]/g,'').replace(',','.')); if(isNaN(n)) return v; return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
-function toast(msg, ok=true){
-  const t=$("#toast"); t.className=ok?"ok":"err";
-  t.innerHTML=(ok?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>':'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.01"/></svg>')+"<span>"+esc(msg)+"</span>";
-  t.classList.add("show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),3400);
+function brl(v){
+  if(v===""||v==null)return"";
+  const n=Number(String(v).replace(/[^\d,.-]/g,'').replace(',','.'));
+  if(isNaN(n))return v;
+  return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 }
-function openModal(title,sub){ $("#mTitle").textContent=title; $("#mSub").textContent=sub||""; $("#scrim").classList.add("show"); document.body.style.overflow="hidden"; }
-function closeModal(){ $("#scrim").classList.remove("show"); document.body.style.overflow=""; }
-$("#scrim").addEventListener("click",e=>{ if(e.target===$("#scrim")) closeModal(); });
-document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeModal(); });
-const AREAS=["Atendimento / Vendas","Administrativo","Financeiro","Logística / Estoque","Produção / Operacional","Limpeza / Serviços gerais","Cozinha / Alimentação","TI / Tecnologia","Saúde","Educação","Outra"];
+function toast(msg,ok=true){
+  const t=$("#toast"); t.className=ok?"ok":"err";
+  t.innerHTML=(ok
+    ?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>'
+    :'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.01"/></svg>')
+    +"<span>"+esc(msg)+"</span>";
+  t.classList.add("show");
+  clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove("show"),3600);
+}
 
-/* ============== CANDIDATO ============== */
-function openCand(){
-  openModal("Cadastro de candidato","É gratuito. Leva 1 minuto.");
+/* ── View switching ── */
+function enter(mode){
+  store.set("crh_mode",mode);
+  $("#chooser").classList.add("hidden");
+  $("#siteView").classList.toggle("hidden",mode!=="site");
+  $("#appView").classList.toggle("hidden",mode!=="app");
+  const fab=$("#waFab");
+  if(fab) fab.style.display=(mode==="app")?"flex":"none";
+  window.scrollTo(0,0);
+}
+function showChooser(){
+  closeActive();
+  closeDrawer();
+  $("#chooser").classList.remove("hidden");
+  $("#siteView").classList.add("hidden");
+  $("#appView").classList.add("hidden");
+}
+/* ── GO HOME ── */
+function goHome(){
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ── Drawer ── */
+function toggleDrawer(){
+  const d=$("#drawer"), s=$("#drawerScrim"), h=$("#hamBtn");
+  const open=d.classList.toggle("open");
+  s.classList.toggle("show",open);
+  h.classList.toggle("open",open);
+  document.body.style.overflow=open?"hidden":"";
+}
+function closeDrawer(){
+  $("#drawer").classList.remove("open");
+  $("#drawerScrim").classList.remove("show");
+  $("#hamBtn").classList.remove("open");
+  document.body.style.overflow="";
+}
+function drawerAbout(){
+  closeDrawer();
+  openModal("Sobre a KonectaRH","Conheça nossa história");
+  CTX=$("#mBody");
+  CTX.innerHTML=`<p style="white-space:pre-wrap;color:var(--muted)">${esc(cfg.aboutText||defaultCfg.aboutText)}</p>`;
+}
+function drawerWeek(){
+  closeDrawer();
+  openModal("Atualização da semana","Novidades");
+  CTX=$("#mBody");
+  CTX.innerHTML=`<div class="week" style="margin-top:0"><div class="label"><span class="dot"></span> Novidades</div><p style="white-space:pre-wrap;color:var(--muted)">${esc(cfg.weekText||defaultCfg.weekText)}</p></div>`;
+}
+function drawerSite(){
+  closeDrawer();
+  enter("site");
+}
+function drawerAdmin(){
+  closeDrawer();
+  openAdmin();
+}
+
+/* ── FAB peek ── */
+function fabPeek(){
+  const fab=$("#waFab");
+  if(!fab) return;
+  fab.classList.add("peek");
+  setTimeout(()=>fab.classList.remove("peek"),3200);
+}
+
+/* ── Form HTML builders (idênticos ao original) ── */
+function formCandHTML(){
   const areaOpts=AREAS.map(a=>`<option>${a}</option>`).join("");
-  $("#mBody").innerHTML=`
+  return `
     <div class="seg">
       <button class="on" id="segForm" onclick="candMode('form')">Preencher dados</button>
       <button id="segPdf" onclick="candMode('pdf')">Anexar PDF</button>
@@ -445,77 +1208,94 @@ function openCand(){
       <div class="field"><label>Resumo da experiência</label><textarea id="c_exp" placeholder="Conte rapidamente sua experiência, cursos e disponibilidade."></textarea></div>
     </div>
     <div id="candPdf" style="display:none">
-      <div class="field"><label>Currículo em PDF <span class="req">*</span></label>
+      <div class="field">
+        <label>Currículo em PDF <span class="req">*</span></label>
         <div class="drop" id="drop" onclick="$('#c_file').click()">
           <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-          <div><b>Toque para enviar</b> ou arraste o arquivo</div>
+          <div><b>Toque para enviar</b> ou arraste</div>
           <div style="font-size:.8rem;margin-top:4px">PDF até 8&nbsp;MB</div>
         </div>
         <input type="file" id="c_file" accept="application/pdf" style="display:none">
-        <div class="filechip" id="chip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><span id="chipName"></span><span class="rm" onclick="clearFile(event)">✕</span></div>
+        <div class="upload-wrap">
+          <div class="upload-status" id="uploadStatus">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+            <span class="uname" id="uploadName">—</span>
+            <span class="uperc" id="uploadPerc">0%</span>
+            <span class="urm" id="uploadRm" onclick="clearFile(event)" title="Remover">✕</span>
+          </div>
+          <div class="prog-bar-wrap" id="progWrap" style="display:none">
+            <div class="prog-bar" id="progBar"></div>
+          </div>
+        </div>
       </div>
     </div>
     <button class="btn btn-primary full" id="candBtn" onclick="submitCand()">Enviar cadastro</button>`;
-  let f=$("#c_file"); f.onchange=()=>showFile(f.files[0]);
-  const d=$("#drop");
-  ["dragover","dragenter"].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.add("over")}));
-  ["dragleave","drop"].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.remove("over")}));
-  d.addEventListener("drop",e=>{ if(e.dataTransfer.files[0]){ f.files=e.dataTransfer.files; showFile(f.files[0]); }});
-}
-let candCurMode="form";
-function candMode(m){ candCurMode=m;
-  $("#segForm").classList.toggle("on",m==="form"); $("#segPdf").classList.toggle("on",m==="pdf");
-  $("#candForm").style.display = m==="form"?"block":"none";
-  $("#candPdf").style.display  = m==="pdf"?"block":"none";
-}
-function showFile(file){ if(!file)return; if(file.size>8*1024*1024){toast("Arquivo acima de 8 MB.",false);$("#c_file").value="";return;}
-  $("#chipName").textContent=file.name; $("#chip").classList.add("show"); }
-function clearFile(e){ e.stopPropagation(); $("#c_file").value=""; $("#chip").classList.remove("show"); }
-async function submitCand(){
-  const nome=$("#c_nome").value.trim(), tel=$("#c_tel").value.trim();
-  if(!nome||!tel){ toast("Preencha nome e WhatsApp.",false); return; }
-  const btn=$("#candBtn"); btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Enviando…';
-  try{
-    if(!fbReady) throw new Error("Sem conexão com o servidor.");
-    let pdfUrl="", pdfName="";
-    if(candCurMode==="pdf"){
-      const file=$("#c_file").files[0];
-      if(!file){ throw new Error("Anexe o PDF do currículo."); }
-      if(storage){
-        const ref=storage.ref().child(`${COL_CAND}/${Date.now()}_${file.name.replace(/[^\w.\-]/g,'_')}`);
-        await ref.put(file); pdfUrl=await ref.getDownloadURL(); pdfName=file.name;
-      }else{ throw new Error("Armazenamento de PDF indisponível. Tente 'Preencher dados'."); }
-    }
-    await db.collection(COL_CAND).add({
-      nome, telefone:tel, email:$("#c_email").value.trim(), cidade:$("#c_cidade").value.trim(),
-      tipo:candCurMode,
-      area: candCurMode==="form"?$("#c_area").value:"", cargo: candCurMode==="form"?$("#c_cargo").value.trim():"",
-      experiencia: candCurMode==="form"?$("#c_exp").value.trim():"",
-      pdfUrl, pdfName, criadoEm:new Date().toISOString(), ts:Date.now()
-    });
-    candDone(nome);
-  }catch(err){ toast(err.message||"Erro ao enviar.",false); btn.disabled=false; btn.innerHTML="Enviar cadastro"; }
-}
-function candDone(nome){
-  $("#mBody").innerHTML=`<div class="done">
-    <div class="check"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></div>
-    <h3>Currículo recebido!</h3>
-    <p>Obrigado, ${esc(nome.split(" ")[0])}. Você já faz parte do nosso banco de talentos. Entraremos em contato quando surgir uma vaga com seu perfil.</p>
-    <button class="btn btn-primary full" onclick="closeModal()">Fechar</button>
-  </div>`;
 }
 
-/* ============== CLIENTE (pacote) ============== */
-function openCliente(){
-  openModal("Contratar pacote de currículos","10 currículos selecionados • entrega em até 2 dias");
-  const priceShown = cfg.packagePrice ? brl(cfg.packagePrice) : "Sob consulta";
-  let extra="";
-  if(cfg.priceTable && cfg.priceTable.length){
-    extra=`<div class="pkg" style="margin-top:-6px"><b style="font-size:.85rem;color:var(--muted)">Outros valores</b><div class="meta" style="margin-top:10px">`+
-      cfg.priceTable.filter(p=>p.nome).map(p=>`<span class="pill">${esc(p.nome)} <b>${esc(brl(p.valor)||p.valor||"")}</b></span>`).join("")+`</div></div>`;
-  }
+function wireCandFile(){
+  const f=$("#c_file"); if(!f) return;
+  f.onchange=()=>showFileUI(f.files[0]);
+  const d=$("#drop"); if(!d) return;
+  ["dragover","dragenter"].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.add("over")}));
+  ["dragleave","drop"].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.remove("over")}));
+  d.addEventListener("drop",e=>{
+    if(e.dataTransfer.files[0]){
+      f.files=e.dataTransfer.files;
+      showFileUI(f.files[0]);
+    }
+  });
+}
+function showFileUI(file){
+  if(!file) return;
+  if(file.size>8*1024*1024){ toast("Arquivo acima de 8 MB.",false); $("#c_file").value=""; return; }
+  const us=$("#uploadStatus"), un=$("#uploadName"), up=$("#uploadPerc"), pw=$("#progWrap"), pb=$("#progBar");
+  if(us){ us.classList.add("show"); us.classList.remove("prog-done"); }
+  if(un) un.textContent=file.name;
+  if(up) up.textContent="Pronto";
+  if(pw){ pw.style.display="none"; }
+  if(pb){ pb.style.width="0%"; }
+}
+function clearFile(e){
+  e&&e.stopPropagation();
+  const f=$("#c_file"); if(f) f.value="";
+  const us=$("#uploadStatus"),pw=$("#progWrap");
+  if(us) us.classList.remove("show","prog-done");
+  if(pw) pw.style.display="none";
+}
+async function uploadWithProgress(file, path){
+  return new Promise((resolve,reject)=>{
+    const ref=storage.ref().child(path);
+    const task=ref.put(file);
+    const pw=$("#progWrap"), pb=$("#progBar"), up=$("#uploadPerc"), us=$("#uploadStatus");
+    if(pw) pw.style.display="block";
+    task.on('state_changed',
+      snap=>{
+        const pct=Math.round((snap.bytesTransferred/snap.totalBytes)*100);
+        if(pb) pb.style.width=pct+"%";
+        if(up) up.textContent=pct+"%";
+      },
+      err=>reject(err),
+      async ()=>{
+        const url=await task.snapshot.ref.getDownloadURL();
+        if(pb) pb.style.width="100%";
+        if(up) up.textContent="✓ Enviado";
+        if(us) us.classList.add("prog-done");
+        resolve(url);
+      }
+    );
+  });
+}
+
+function formClienteHTML(){
+  const priceShown=cfg.packagePrice?brl(cfg.packagePrice):"Sob consulta";
   const areaOpts=AREAS.map(a=>`<option>${a}</option>`).join("");
-  $("#mBody").innerHTML=`
+  let extra="";
+  if(cfg.priceTable&&cfg.priceTable.length){
+    extra=`<div class="pkg" style="margin-top:-6px"><b style="font-size:.85rem;color:var(--muted)">Outros valores</b><div class="meta" style="margin-top:10px">`
+      +cfg.priceTable.filter(p=>p.nome).map(p=>`<span class="pill">${esc(p.nome)} <b>${esc(brl(p.valor)||p.valor||"")}</b></span>`).join("")
+      +`</div></div>`;
+  }
+  return `
     <div class="pkg">
       <div style="font-size:.85rem;color:var(--muted);margin-bottom:4px">${esc(cfg.packageLabel||"Pacote 10 currículos")}</div>
       <div class="price">${esc(priceShown)}</div>
@@ -524,8 +1304,10 @@ function openCliente(){
         <span class="pill">Entrega <b>2 dias</b></span>
         <span class="pill">Triagem por perfil</span>
       </div>
-      <div class="pay-note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-        <span><b style="color:var(--text)">50% para iniciar</b> e os outros <b style="color:var(--text)">50% na entrega</b> dos currículos.</span></div>
+      <div class="pay-note">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <span><b style="color:var(--text)">50% para iniciar</b> e os outros <b style="color:var(--text)">50% na entrega</b>.</span>
+      </div>
     </div>
     ${extra}
     <div class="row2">
@@ -537,44 +1319,14 @@ function openCliente(){
       <div class="field"><label>E-mail</label><input id="e_email" placeholder="contato@empresa.com" inputmode="email"></div>
     </div>
     <div class="field"><label>Perfil da vaga <span class="req">*</span></label><select id="e_perfil">${areaOpts}</select></div>
-    <div class="field"><label>Descreva o que você procura</label><textarea id="e_desc" placeholder="Ex.: Vendedor com experiência em loja, disponibilidade aos sábados, perfil comunicativo…"></textarea></div>
+    <div class="field"><label>Descreva o que você procura</label><textarea id="e_desc" placeholder="Ex.: Vendedor com experiência em loja, disponibilidade aos sábados…"></textarea></div>
     <button class="btn btn-primary full" id="cliBtn" onclick="submitCliente()">Confirmar pedido</button>`;
 }
-async function submitCliente(){
-  const emp=$("#e_emp").value.trim(), nome=$("#e_nome").value.trim(), tel=$("#e_tel").value.trim();
-  if(!emp||!nome||!tel){ toast("Preencha empresa, nome e WhatsApp.",false); return; }
-  const btn=$("#cliBtn"); btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Registrando…';
-  const pedido={ empresa:emp, responsavel:nome, telefone:tel, email:$("#e_email").value.trim(),
-    perfil:$("#e_perfil").value, descricao:$("#e_desc").value.trim(),
-    pacote:cfg.packageLabel||"10 currículos", preco:cfg.packagePrice||"a combinar",
-    status:"aguardando pagamento 50%", criadoEm:new Date().toISOString(), ts:Date.now() };
-  try{ if(fbReady) await db.collection(COL_PED).add(pedido); }
-  catch(e){ console.warn(e); }
-  finally{
-    const msg=encodeURIComponent(
-      `Olá! Quero contratar o pacote de currículos da ConectaRH.\n\n`+
-      `Empresa: ${emp}\nResponsável: ${nome}\nPerfil da vaga: ${pedido.perfil}\n`+
-      (pedido.descricao?`Descrição: ${pedido.descricao}\n`:``)+
-      `Pacote: ${pedido.pacote}${cfg.packagePrice?` (${brl(cfg.packagePrice)})`:``}\n\nGostaria de combinar o pagamento dos 50% para iniciar.`);
-    cliDone(WHATS+"?text="+msg);
-  }
-}
-function cliDone(waUrl){
-  $("#mBody").innerHTML=`<div class="done">
-    <div class="check"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></div>
-    <h3>Pedido registrado!</h3>
-    <p>Agora é só combinar o pagamento dos <b style="color:var(--text)">50% para iniciar</b>. Toque abaixo pra falar com a gente no WhatsApp com seu pedido já preenchido.</p>
-    <a class="btn btn-wa full" href="https://wa.me/${waUrl}" target="_blank" rel="noopener">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M.06 24l1.68-6.13A11.86 11.86 0 0 1 .12 11.9C.12 5.34 5.46 0 12.02 0a11.82 11.82 0 0 1 8.41 3.49 11.82 11.82 0 0 1 3.48 8.42c0 6.56-5.34 11.9-11.9 11.9a11.9 11.9 0 0 1-5.68-1.45L.06 24zM6.6 20.2l.36.21a9.86 9.86 0 0 0 5.04 1.38h.01c5.45 0 9.89-4.43 9.89-9.88a9.82 9.82 0 0 0-2.9-7A9.82 9.82 0 0 0 12.02 2c-5.46 0-9.9 4.43-9.9 9.88 0 1.87.53 3.7 1.51 5.28l.24.38-1 3.63 3.73-.97z"/><path d="M9.07 6.92c-.22-.5-.46-.51-.68-.52l-.58-.01c-.2 0-.53.08-.8.38s-1.05 1.03-1.05 2.5 1.08 2.9 1.23 3.1c.15.2 2.1 3.36 5.18 4.58 2.56 1.01 3.08.81 3.64.76.56-.05 1.8-.74 2.06-1.45.25-.7.25-1.31.18-1.44-.07-.12-.27-.2-.56-.35s-1.8-.89-2.07-.99c-.28-.1-.48-.15-.68.15-.2.3-.78.99-.95 1.19-.18.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.48-.88-.79-1.48-1.76-1.65-2.06-.18-.3-.02-.46.13-.6.13-.14.3-.35.45-.53.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53s-.66-1.62-.91-2.22z"/></svg>
-      Combinar pagamento no WhatsApp</a>
-    <button class="btn btn-ghost full" style="margin-top:10px" onclick="closeModal()">Fechar</button>
-  </div>`;
-}
 
-/* ============== VAGAS PERSONALIZADAS ============== */
-function openVagas(){
-  openModal("Vagas personalizadas","Processo seletivo completo, sob medida.");
-  $("#mBody").innerHTML=`
+const WA_ICON='<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M.06 24l1.68-6.13A11.86 11.86 0 0 1 .12 11.9C.12 5.34 5.46 0 12.02 0a11.82 11.82 0 0 1 8.41 3.49 11.82 11.82 0 0 1 3.48 8.42c0 6.56-5.34 11.9-11.9 11.9a11.9 11.9 0 0 1-5.68-1.45L.06 24zM6.6 20.2l.36.21a9.86 9.86 0 0 0 5.04 1.38h.01c5.45 0 9.89-4.43 9.89-9.88a9.82 9.82 0 0 0-2.9-7A9.82 9.82 0 0 0 12.02 2c-5.46 0-9.9 4.43-9.9 9.88 0 1.87.53 3.7 1.51 5.28l.24.38-1 3.63 3.73-.97z"/><path d="M9.07 6.92c-.22-.5-.46-.51-.68-.52l-.58-.01c-.2 0-.53.08-.8.38s-1.05 1.03-1.05 2.5 1.08 2.9 1.23 3.1c.15.2 2.1 3.36 5.18 4.58 2.56 1.01 3.08.81 3.64.76.56-.05 1.8-.74 2.06-1.45.25-.7.25-1.31.18-1.44-.07-.12-.27-.2-.56-.35s-1.8-.89-2.07-.99c-.28-.1-.48-.15-.68.15-.2.3-.78.99-.95 1.19-.18.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.48-.88-.79-1.48-1.76-1.65-2.06-.18-.3-.02-.46.13-.6.13-.14.3-.35.45-.53.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53s-.66-1.62-.91-2.22z"/></svg>';
+
+function formVagasHTML(){
+  return `
     <div class="pkg">
       <div style="font-size:.95rem;color:var(--text);font-weight:600;margin-bottom:12px">O que está incluso</div>
       <ul class="feature-list" style="margin-top:0">
@@ -583,45 +1335,180 @@ function openVagas(){
         <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg> Recolhimento de documentos</li>
         <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg> Apoio na integração do contratado</li>
       </ul>
-      <div class="pay-note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.01"/></svg>
-        <span>O valor varia conforme a vaga. Conte o que você precisa e enviamos um orçamento.</span></div>
+      <div class="pay-note">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.01"/></svg>
+        <span>O valor varia conforme a vaga. Conte o que precisa e enviamos um orçamento.</span>
+      </div>
     </div>
     <div class="row2">
       <div class="field"><label>Empresa <span class="req">*</span></label><input id="v_emp" placeholder="Nome da empresa"></div>
       <div class="field"><label>Seu nome <span class="req">*</span></label><input id="v_nome" placeholder="Responsável"></div>
     </div>
     <div class="field"><label>WhatsApp <span class="req">*</span></label><input id="v_tel" placeholder="(11) 90000-0000" inputmode="tel"></div>
-    <div class="field"><label>O que você precisa?</label><textarea id="v_desc" placeholder="Ex.: 1 vaga de gerente de loja, processo completo com integração e documentação."></textarea></div>
-    <button class="btn btn-wa full" id="vagBtn" onclick="submitVagas()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M.06 24l1.68-6.13A11.86 11.86 0 0 1 .12 11.9C.12 5.34 5.46 0 12.02 0a11.82 11.82 0 0 1 8.41 3.49 11.82 11.82 0 0 1 3.48 8.42c0 6.56-5.34 11.9-11.9 11.9a11.9 11.9 0 0 1-5.68-1.45L.06 24zM6.6 20.2l.36.21a9.86 9.86 0 0 0 5.04 1.38h.01c5.45 0 9.89-4.43 9.89-9.88a9.82 9.82 0 0 0-2.9-7A9.82 9.82 0 0 0 12.02 2c-5.46 0-9.9 4.43-9.9 9.88 0 1.87.53 3.7 1.51 5.28l.24.38-1 3.63 3.73-.97z"/><path d="M9.07 6.92c-.22-.5-.46-.51-.68-.52l-.58-.01c-.2 0-.53.08-.8.38s-1.05 1.03-1.05 2.5 1.08 2.9 1.23 3.1c.15.2 2.1 3.36 5.18 4.58 2.56 1.01 3.08.81 3.64.76.56-.05 1.8-.74 2.06-1.45.25-.7.25-1.31.18-1.44-.07-.12-.27-.2-.56-.35s-1.8-.89-2.07-.99c-.28-.1-.48-.15-.68.15-.2.3-.78.99-.95 1.19-.18.2-.35.22-.64.07-.3-.15-1.26-.46-2.39-1.48-.88-.79-1.48-1.76-1.65-2.06-.18-.3-.02-.46.13-.6.13-.14.3-.35.45-.53.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53s-.66-1.62-.91-2.22z"/></svg>
-      Solicitar orçamento no WhatsApp</button>`;
+    <div class="field"><label>O que você precisa?</label><textarea id="v_desc" placeholder="Ex.: 1 vaga de gerente de loja, processo completo."></textarea></div>
+    <button class="btn btn-wa full" id="vagBtn" onclick="submitVagas()">${WA_ICON} Solicitar orçamento no WhatsApp</button>`;
 }
+
+let CTX=null;
+function candMode(m){
+  const sf=$("#segForm"),sp=$("#segPdf");
+  if(sf) sf.classList.toggle("on",m==="form");
+  if(sp) sp.classList.toggle("on",m==="pdf");
+  const cf=$("#candForm"),cp=$("#candPdf");
+  if(cf) cf.style.display=m==="form"?"block":"none";
+  if(cp) cp.style.display=m==="pdf"?"block":"none";
+  window._candMode=m;
+}
+
+function openModal(title,sub){
+  $("#mTitle").textContent=title;
+  $("#mSub").textContent=sub||"";
+  $("#scrim").classList.add("show");
+  document.body.style.overflow="hidden";
+}
+function closeModal(){
+  $("#scrim").classList.remove("show");
+  document.body.style.overflow="";
+  setTimeout(()=>{ if(!$("#scrim").classList.contains("show")) $("#mBody").innerHTML=""; },350);
+}
+$("#scrim").addEventListener("click",e=>{ if(e.target===$("#scrim")) closeModal(); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeActive(); });
+
+function openCand(){ openModal("Cadastro de candidato","É gratuito. Leva 1 minuto."); CTX=$("#mBody"); CTX.innerHTML=formCandHTML(); candMode('form'); wireCandFile(); }
+function openCliente(){ openModal("Contratar pacote","10 currículos • entrega em até 2 dias"); CTX=$("#mBody"); CTX.innerHTML=formClienteHTML(); }
+function openVagas(){ openModal("Vagas personalizadas","Processo seletivo completo, sob medida."); CTX=$("#mBody"); CTX.innerHTML=formVagasHTML(); }
+
+const APPMETA={
+  cand:["Cadastro de candidato","É gratuito. Leva 1 minuto.",formCandHTML],
+  cli:["Contratar pacote","10 currículos • até 2 dias",formClienteHTML],
+  vag:["Vagas personalizadas","Processo completo sob medida",formVagasHTML]
+};
+function appOpen(frontEl,type){
+  const card=frontEl.closest(".appcard");
+  const back=card.querySelector(".face.back");
+  const m=APPMETA[type];
+  back.innerHTML=`
+    <div class="bk-head">
+      <button class="bk-back" onclick="closeActive()">✕</button>
+      <div><h3>${m[0]}</h3><div class="bk-sub">${m[1]}</div></div>
+    </div>
+    <div class="bk-body" id="bkBody"></div>`;
+  CTX=back.querySelector("#bkBody");
+  CTX.innerHTML=m[2]();
+  if(type==="cand"){ candMode('form'); wireCandFile(); }
+  $("#appscrim").classList.add("show");
+  document.body.style.overflow="hidden";
+  card.classList.add("open");
+  requestAnimationFrame(()=>card.querySelector(".flip-inner").classList.add("flipped"));
+}
+function closeActive(){
+  const card=document.querySelector(".appcard.open");
+  if(card){
+    card.querySelector(".flip-inner").classList.remove("flipped");
+    $("#appscrim").classList.remove("show");
+    document.body.style.overflow="";
+    setTimeout(()=>{ card.classList.remove("open"); card.querySelector(".face.back").innerHTML=""; },650);
+    return;
+  }
+  closeModal();
+}
+
+async function submitCand(){
+  const nome=$("#c_nome").value.trim(), tel=$("#c_tel").value.trim();
+  if(!nome||!tel){ toast("Preencha nome e WhatsApp.",false); return; }
+  const mode=window._candMode||"form";
+  const btn=$("#candBtn"); btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Enviando…';
+  try{
+    if(!fbReady) throw new Error("Sem conexão com o servidor.");
+    let pdfUrl="", pdfName="";
+    if(mode==="pdf"){
+      const file=$("#c_file").files[0];
+      if(!file) throw new Error("Anexe o PDF do currículo.");
+      if(!storage) throw new Error("Storage indisponível. Use 'Preencher dados'.");
+      const path=`${COL_CAND}/${Date.now()}_${file.name.replace(/[^\w.\-]/g,'_')}`;
+      pdfUrl=await uploadWithProgress(file, path);
+      pdfName=file.name;
+    }
+    await db.collection(COL_CAND).add({
+      nome, telefone:tel,
+      email:$("#c_email").value.trim(),
+      cidade:$("#c_cidade").value.trim(),
+      tipo:mode,
+      area:mode==="form"?$("#c_area").value:"",
+      cargo:mode==="form"?$("#c_cargo").value.trim():"",
+      experiencia:mode==="form"?$("#c_exp").value.trim():"",
+      pdfUrl, pdfName,
+      criadoEm:new Date().toISOString(), ts:Date.now()
+    });
+    done("Currículo recebido!",`Obrigado, ${esc(nome.split(" ")[0])}. Você já faz parte do nosso banco de talentos. Entraremos em contato quando surgir uma vaga com seu perfil.`);
+  }catch(err){
+    toast(err.message||"Erro ao enviar.",false);
+    btn.disabled=false; btn.innerHTML="Enviar cadastro";
+  }
+}
+
+async function submitCliente(){
+  const emp=$("#e_emp").value.trim(), nome=$("#e_nome").value.trim(), tel=$("#e_tel").value.trim();
+  if(!emp||!nome||!tel){ toast("Preencha empresa, nome e WhatsApp.",false); return; }
+  const btn=$("#cliBtn"); btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Registrando…';
+  const pedido={
+    empresa:emp, responsavel:nome, telefone:tel,
+    email:$("#e_email").value.trim(),
+    perfil:$("#e_perfil").value,
+    descricao:$("#e_desc").value.trim(),
+    pacote:cfg.packageLabel||"10 currículos",
+    preco:cfg.packagePrice||"a combinar",
+    status:"aguardando pagamento 50%",
+    criadoEm:new Date().toISOString(), ts:Date.now()
+  };
+  try{ if(fbReady) await db.collection(COL_PED).add(pedido); }catch(e){ console.warn(e); }
+  const msg=encodeURIComponent(
+    `Olá! Quero contratar o pacote de currículos da KonectaRH.\n\nEmpresa: ${emp}\nResponsável: ${nome}\nPerfil: ${pedido.perfil}\n`
+    +(pedido.descricao?`Descrição: ${pedido.descricao}\n`:``)+
+    `Pacote: ${pedido.pacote}${cfg.packagePrice?` (${brl(cfg.packagePrice)})`:``}\n\nGostaria de combinar o pagamento dos 50% para iniciar.`);
+  doneWA("Pedido registrado!","Agora é só combinar o pagamento dos <b style='color:var(--text)'>50% para iniciar</b>. Toque abaixo pra falar no WhatsApp com seu pedido pronto.",
+    "https://wa.me/"+WHATS+"?text="+msg);
+}
+
 async function submitVagas(){
   const emp=$("#v_emp").value.trim(), nome=$("#v_nome").value.trim(), tel=$("#v_tel").value.trim();
   if(!emp||!nome||!tel){ toast("Preencha empresa, nome e WhatsApp.",false); return; }
   const desc=$("#v_desc").value.trim();
-  const btn=$("#vagBtn"); btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Abrindo WhatsApp…';
-  try{ if(fbReady) await db.collection(COL_ORC).add({empresa:emp,responsavel:nome,telefone:tel,descricao:desc,criadoEm:new Date().toISOString(),ts:Date.now()}); }
-  catch(e){ console.warn(e); }
-  const msg=encodeURIComponent(`Olá! Quero um orçamento de *vaga personalizada* (processo completo) na ConectaRH.\n\nEmpresa: ${emp}\nResponsável: ${nome}\n`+(desc?`Preciso de: ${desc}`:``));
+  const btn=$("#vagBtn"); btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Abrindo…';
+  try{ if(fbReady) await db.collection(COL_ORC).add({empresa:emp,responsavel:nome,telefone:tel,descricao:desc,criadoEm:new Date().toISOString(),ts:Date.now()}); }catch(e){ console.warn(e); }
+  const msg=encodeURIComponent(`Olá! Quero um orçamento de *vaga personalizada* (processo completo) na KonectaRH.\n\nEmpresa: ${emp}\nResponsável: ${nome}\n`+(desc?`Preciso de: ${desc}`:``));
   window.open(`https://wa.me/${WHATS}?text=${msg}`,"_blank","noopener");
-  closeModal(); toast("Pedido registrado. Abrindo o WhatsApp…");
+  closeActive();
+  toast("Pedido registrado. Abrindo o WhatsApp…");
 }
 
-/* ============== ADMIN ============== */
+function done(t,p){
+  if(!CTX) return;
+  CTX.innerHTML=`<div class="done"><div class="check"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></div><h3>${t}</h3><p>${p}</p><button class="btn btn-primary full" onclick="closeActive()">Fechar</button></div>`;
+}
+function doneWA(t,p,wa){
+  if(!CTX) return;
+  CTX.innerHTML=`<div class="done"><div class="check"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></div><h3>${t}</h3><p>${p}</p><a class="btn btn-wa full" href="${wa}" target="_blank" rel="noopener">${WA_ICON} Combinar pagamento no WhatsApp</a><button class="btn btn-ghost full" style="margin-top:10px" onclick="closeActive()">Fechar</button></div>`;
+}
+
 function openAdmin(){
   openModal("Painel da empresa","Acesso restrito");
-  $("#mBody").innerHTML=`
-    <div class="field"><label>Senha de acesso</label><input id="pin" type="password" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')checkPin()"></div>
+  CTX=$("#mBody");
+  CTX.innerHTML=`
+    <div class="field">
+      <label>Senha de acesso</label>
+      <input id="pin" type="password" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')checkPin()">
+    </div>
     <button class="btn btn-primary full" onclick="checkPin()">Entrar</button>`;
-  setTimeout(()=>$("#pin").focus(),200);
+  setTimeout(()=>{ const p=$("#pin"); if(p) p.focus(); },200);
 }
 function checkPin(){
   if($("#pin").value!==ADMIN_PIN){ toast("Senha incorreta.",false); return; }
   adminPanel();
 }
 function adminPanel(){
-  $("#mTitle").textContent="Painel da empresa"; $("#mSub").textContent="Edite preços, conteúdo e veja os recebidos";
+  $("#mTitle").textContent="Painel da empresa";
+  $("#mSub").textContent="Preços, conteúdo e recebidos";
   $("#mBody").innerHTML=`
     <div class="tabs">
       <button class="on" onclick="adTab(0,this)">Preços</button>
@@ -631,12 +1518,11 @@ function adminPanel(){
     <div class="tabpane on" id="tab0">
       <div class="field"><label>Nome do pacote</label><input id="a_plabel" value="${esc(cfg.packageLabel||"")}"></div>
       <div class="field"><label>Preço do pacote (R$)</label><input id="a_pprice" value="${esc(cfg.packagePrice||"")}" placeholder="Ex.: 350,00" inputmode="decimal"></div>
-      <div class="field"><label>Outros valores (opcional)</label><div id="priceList"></div>
-        <button class="btn btn-ghost" style="padding:9px 14px;font-size:.85rem" onclick="addPrice()">+ Adicionar valor</button></div>
+      <div class="field"><label>Outros valores (opcional)</label><div id="priceList"></div><button class="btn btn-ghost" style="padding:9px 14px;font-size:.85rem" onclick="addPrice()">+ Adicionar valor</button></div>
       <button class="btn btn-primary full" style="margin-top:8px" id="saveP" onclick="savePrices()">Salvar preços</button>
     </div>
     <div class="tabpane" id="tab1">
-      <div class="field"><label>Sobre a ConectaRH</label><textarea id="a_about" style="min-height:140px">${esc(cfg.aboutText||"")}</textarea></div>
+      <div class="field"><label>Sobre a KonectaRH</label><textarea id="a_about" style="min-height:140px">${esc(cfg.aboutText||"")}</textarea></div>
       <div class="field"><label>Atualização da semana</label><textarea id="a_week">${esc(cfg.weekText||"")}</textarea></div>
       <button class="btn btn-primary full" id="saveC" onclick="saveContent()">Salvar conteúdo</button>
     </div>
@@ -650,25 +1536,25 @@ function adminPanel(){
     </div>`;
   renderPrices(); recvTab('cand');
 }
-function adTab(i,btn){ document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("on")); btn.classList.add("on");
-  document.querySelectorAll(".tabpane").forEach((p,idx)=>p.classList.toggle("on",idx===i)); }
-function renderPrices(){
-  const box=$("#priceList"); box.innerHTML="";
-  (cfg.priceTable||[]).forEach((p,i)=>box.appendChild(priceRow(p.nome,p.valor,i)));
+function adTab(i,btn){
+  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("on"));
+  btn.classList.add("on");
+  document.querySelectorAll(".tabpane").forEach((p,idx)=>p.classList.toggle("on",idx===i));
 }
+function renderPrices(){ const box=$("#priceList"); box.innerHTML=""; (cfg.priceTable||[]).forEach((p,i)=>box.appendChild(priceRow(p.nome,p.valor,i))); }
 function priceRow(nome,valor,i){
   const d=document.createElement("div"); d.className="priceItem";
-  d.innerHTML=`<input placeholder="Descrição" value="${esc(nome||"")}" data-n="${i}">
-    <input class="v" placeholder="Valor" value="${esc(valor||"")}" data-v="${i}" inputmode="decimal">
-    <button class="del" onclick="this.parentNode.remove()">✕</button>`;
+  d.innerHTML=`<input placeholder="Descrição" value="${esc(nome||"")}" data-n="${i}"><input class="v" placeholder="Valor" value="${esc(valor||"")}" data-v="${i}" inputmode="decimal"><button class="del" onclick="this.parentNode.remove()">✕</button>`;
   return d;
 }
 function addPrice(){ $("#priceList").appendChild(priceRow("","",Date.now())); }
 async function savePrices(){
   const b=$("#saveP"); b.disabled=true; b.innerHTML='<span class="spinner"></span> Salvando…';
-  cfg.packageLabel=$("#a_plabel").value.trim(); cfg.packagePrice=$("#a_pprice").value.trim();
-  const rows=[...document.querySelectorAll("#priceList .priceItem")].map(r=>({nome:r.querySelector("[data-n]").value.trim(), valor:r.querySelector("[data-v]").value.trim()})).filter(x=>x.nome||x.valor);
-  cfg.priceTable=rows;
+  cfg.packageLabel=$("#a_plabel").value.trim();
+  cfg.packagePrice=$("#a_pprice").value.trim();
+  cfg.priceTable=[...document.querySelectorAll("#priceList .priceItem")]
+    .map(r=>({nome:r.querySelector("[data-n]").value.trim(),valor:r.querySelector("[data-v]").value.trim()}))
+    .filter(x=>x.nome||x.valor);
   try{ await saveCfg(); toast("Preços salvos!"); }catch(e){ toast("Não foi possível salvar.",false); }
   b.disabled=false; b.innerHTML="Salvar preços";
 }
@@ -682,79 +1568,93 @@ async function recvTab(which,btn){
   if(btn){ document.querySelectorAll(".subtabs button").forEach(b=>b.classList.remove("on")); btn.classList.add("on"); }
   const box=$("#recvBox"); box.innerHTML='<div class="empty">Carregando…</div>';
   if(!fbReady){ box.innerHTML='<div class="empty">Sem conexão com o servidor.</div>'; return; }
-  const col = which==="cand"?COL_CAND : which==="ped"?COL_PED : COL_ORC;
+  const col=which==="cand"?COL_CAND:which==="ped"?COL_PED:COL_ORC;
   try{
     const snap=await db.collection(col).orderBy("ts","desc").limit(40).get();
     if(snap.empty){ box.innerHTML='<div class="empty">Nada por aqui ainda.</div>'; return; }
     let html="";
-    snap.forEach(doc=>{ const d=doc.data(); const when=d.criadoEm?new Date(d.criadoEm).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):"";
+    snap.forEach(doc=>{
+      const d=doc.data();
+      const when=d.criadoEm?new Date(d.criadoEm).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):"";
       if(which==="cand"){
-        html+=`<div class="item"><div class="t"><span>${esc(d.nome||"—")}</span><span class="when">${when}</span></div>
-          <div class="d">${esc(d.cargo||d.area||"")} • ${esc(d.telefone||"")} ${d.pdfUrl?` • <a href="${d.pdfUrl}" target="_blank" style="color:var(--cyan)">ver PDF</a>`:""}</div></div>`;
+        html+=`<div class="item"><div class="t"><span>${esc(d.nome||"—")}</span><span class="when">${when}</span></div><div class="d">${esc(d.cargo||d.area||"")} • ${esc(d.telefone||"")}${d.pdfUrl?` • <a href="${d.pdfUrl}" target="_blank" style="color:var(--sky)">ver PDF</a>`:""}</div></div>`;
       }else if(which==="ped"){
-        html+=`<div class="item"><div class="t"><span>${esc(d.empresa||"—")}</span><span class="when">${when}</span></div>
-          <div class="d">${esc(d.perfil||"")} • ${esc(d.responsavel||"")} • ${esc(d.telefone||"")}<br>${esc(d.status||"")} ${d.preco?`• ${esc(brl(d.preco)||d.preco)}`:""}</div></div>`;
+        html+=`<div class="item"><div class="t"><span>${esc(d.empresa||"—")}</span><span class="when">${when}</span></div><div class="d">${esc(d.perfil||"")} • ${esc(d.responsavel||"")} • ${esc(d.telefone||"")}<br>${esc(d.status||"")} ${d.preco?`• ${esc(brl(d.preco)||d.preco)}`:""}</div></div>`;
       }else{
-        html+=`<div class="item"><div class="t"><span>${esc(d.empresa||"—")}</span><span class="when">${when}</span></div>
-          <div class="d">${esc(d.responsavel||"")} • ${esc(d.telefone||"")}<br>${esc(d.descricao||"")}</div></div>`;
+        html+=`<div class="item"><div class="t"><span>${esc(d.empresa||"—")}</span><span class="when">${when}</span></div><div class="d">${esc(d.responsavel||"")} • ${esc(d.telefone||"")}<br>${esc(d.descricao||"")}</div></div>`;
       }
     });
     box.innerHTML=html;
   }catch(e){ box.innerHTML='<div class="empty">Erro ao carregar (verifique as regras do Firestore).</div>'; }
 }
 
-/* ============== Card 3D tilt ============== */
-if(!window.matchMedia("(prefers-reduced-motion:reduce)").matches && window.matchMedia("(pointer:fine)").matches){
+/* ── 3D tilt cards ── */
+if(!matchMedia("(prefers-reduced-motion:reduce)").matches && matchMedia("(pointer:fine)").matches){
   document.querySelectorAll("#cards .card").forEach(card=>{
-    card.addEventListener("mousemove",e=>{ const r=card.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height;
+    card.addEventListener("mousemove",e=>{
+      const r=card.getBoundingClientRect();
+      const x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height;
       card.style.transform=`rotateY(${(x-.5)*9}deg) rotateX(${(.5-y)*9}deg) translateY(-6px)`;
-      card.style.setProperty("--mx",x*100+"%"); card.style.setProperty("--my",y*100+"%"); });
+      card.style.setProperty("--mx",x*100+"%"); card.style.setProperty("--my",y*100+"%");
+    });
     card.addEventListener("mouseleave",()=>card.style.transform="");
   });
 }
 
-/* ============== Connection network canvas ============== */
+/* ── Network canvas ── */
 (function(){
-  const c=document.getElementById("net"); if(!c) return;
-  if(window.matchMedia("(prefers-reduced-motion:reduce)").matches) return;
-  const ctx=c.getContext("2d"); let w,h,pts,raf;
-  function size(){ w=c.width=innerWidth*devicePixelRatio; h=c.height=innerHeight*devicePixelRatio; }
-  function init(){ size(); const n=Math.min(70,Math.floor(innerWidth/22)); pts=[];
-    for(let i=0;i<n;i++) pts.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.25*devicePixelRatio,vy:(Math.random()-.5)*.25*devicePixelRatio}); }
-  function loop(){ ctx.clearRect(0,0,w,h); const D=140*devicePixelRatio;
-    for(const p of pts){ p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>w)p.vx*=-1; if(p.y<0||p.y>h)p.vy*=-1; }
-    for(let i=0;i<pts.length;i++){ for(let j=i+1;j<pts.length;j++){ const a=pts[i],b=pts[j];
-      const dx=a.x-b.x,dy=a.y-b.y,d=Math.hypot(dx,dy);
-      if(d<D){ const o=(1-d/D)*.5; ctx.strokeStyle=`rgba(139,130,246,${o})`; ctx.lineWidth=devicePixelRatio*.7;
-        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); } } }
-    for(const p of pts){ ctx.fillStyle="rgba(167,139,250,.85)"; ctx.beginPath(); ctx.arc(p.x,p.y,1.6*devicePixelRatio,0,7); ctx.fill(); }
-    raf=requestAnimationFrame(loop); }
-  init(); loop(); let t; addEventListener("resize",()=>{ clearTimeout(t); t=setTimeout(init,200); });
+  const c=document.getElementById("net");
+  if(!c||matchMedia("(prefers-reduced-motion:reduce)").matches) return;
+  const ctx=c.getContext("2d"); let w,h,pts;
+  function size(){ w=c.width=innerWidth*devicePixelRatio; h=c.height=innerHeight*devicePixelRatio; c.style.width=innerWidth+"px"; c.style.height=innerHeight+"px"; }
+  function init(){
+    size();
+    const n=Math.min(70,Math.floor(innerWidth/22)); pts=[];
+    for(let i=0;i<n;i++) pts.push({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.25*devicePixelRatio,vy:(Math.random()-.5)*.25*devicePixelRatio});
+  }
+  function loop(){
+    ctx.clearRect(0,0,w,h);
+    const D=140*devicePixelRatio;
+    for(const p of pts){
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0||p.x>w) p.vx*=-1;
+      if(p.y<0||p.y>h) p.vy*=-1;
+    }
+    for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){
+      const a=pts[i],b=pts[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.hypot(dx,dy);
+      if(d<D){ const o=(1-d/D)*.45; ctx.strokeStyle=`rgba(59,130,246,${o})`; ctx.lineWidth=devicePixelRatio*.7; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); }
+    }
+    for(const p of pts){ ctx.fillStyle="rgba(96,165,250,.85)"; ctx.beginPath(); ctx.arc(p.x,p.y,1.6*devicePixelRatio,0,7); ctx.fill(); }
+    requestAnimationFrame(loop);
+  }
+  init(); loop();
+  let t; addEventListener("resize",()=>{ clearTimeout(t); t=setTimeout(init,200); });
 })();
 
-/* ============== PWA (manifest + SW inline) ============== */
+/* ── PWA manifest ── */
 (function(){
-  const icon="data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#0A0D1C"/><g fill="none" stroke="#8B5CF6" stroke-width="30"><circle cx="180" cy="190" r="80"/><circle cx="332" cy="322" r="80"/><path d="M235 240 L277 272" stroke-linecap="round"/></g></svg>');
-  const manifest={ name:"ConectaRH", short_name:"ConectaRH", start_url:".", display:"standalone",
-    background_color:"#0A0D1C", theme_color:"#0A0D1C",
-    icons:[{src:icon,sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}] };
-  const blob=new Blob([JSON.stringify(manifest)],{type:"application/json"});
-  const l=document.createElement("link"); l.rel="manifest"; l.href=URL.createObjectURL(blob); document.head.appendChild(l);
+  const icon="data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="110" fill="#0A0D1C"/><g fill="none" stroke="#3B82F6" stroke-width="30"><circle cx="180" cy="190" r="80"/><circle cx="332" cy="322" r="80"/><path d="M235 240 L277 272" stroke-linecap="round"/></g></svg>');
+  const manifest={name:"KonectaRH",short_name:"KonectaRH",start_url:".",display:"standalone",background_color:"#0A0D1C",theme_color:"#0A0D1C",icons:[{src:icon,sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}]};
+  const l=document.createElement("link"); l.rel="manifest"; l.href=URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:"application/json"})); document.head.appendChild(l);
   if("serviceWorker" in navigator){
     const sw=`self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>self.clients.claim());self.addEventListener('fetch',e=>{});`;
-    const u=URL.createObjectURL(new Blob([sw],{type:"text/javascript"}));
-    navigator.serviceWorker.register(u).catch(()=>{});
+    navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:"text/javascript"}))).catch(()=>{});
   }
-  let deferred;
-  addEventListener("beforeinstallprompt",e=>{ e.preventDefault(); deferred=e;
-    if(!localStorage.getItem("crh_inst_dismiss")) setTimeout(()=>document.getElementById("install").classList.add("show"),2600); });
-  window.doInstall=async()=>{ document.getElementById("install").classList.remove("show"); if(deferred){ deferred.prompt(); await deferred.userChoice; deferred=null; } };
-  document.querySelector("#install .close").addEventListener("click",()=>localStorage.setItem("crh_inst_dismiss","1"));
 })();
 
-/* ============== Boot ============== */
+/* ── Boot ── */
 loadCfg();
-if(!fbReady) toast("Servidor indisponível agora — os textos exibidos são os padrão.",false);
+const saved=store.get("crh_mode");
+if(saved==="site"||saved==="app"){
+  enter(saved);
+  const fab=$("#waFab");
+  if(fab) fab.style.display=(saved==="app")?"flex":"none";
+  if(saved==="app") setTimeout(fabPeek,1800);
+}else{
+  const fab=$("#waFab");
+  if(fab) fab.style.display="none";
+}
+if(!fbReady) toast("Servidor indisponível agora — textos exibidos são os padrão.",false);
 </script>
 </body>
 </html>
