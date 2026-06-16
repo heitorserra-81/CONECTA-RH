@@ -13,7 +13,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <style>
 /* ============================================================
-   RESET & TOKENS
+   RESET & TOKENS (mesmo de antes, sem mudanças)
    ============================================================ */
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -31,7 +31,6 @@ html,body{overflow-x:hidden;max-width:100vw}
   --text:#EAF0FF; --muted:#9FB0D8; --muted-2:#6E7CA8;
   --gold:#FBBF24;
   --grad:linear-gradient(120deg,#2563EB 0%,#3B82F6 50%,#38BDF8 100%);
-  --grad-gold:linear-gradient(120deg,#F59E0B,#FBBF24,#FCD34D);
   --grad-soft:linear-gradient(120deg,rgba(59,130,246,.18),rgba(56,189,248,.14));
   --radius:22px;
   --shadow:0 24px 60px -20px rgba(0,0,0,.65);
@@ -61,7 +60,7 @@ a{color:inherit;text-decoration:none}
 .hidden{display:none!important}
 
 /* ============================================================
-   CHOOSER
+   CHOOSER (igual)
    ============================================================ */
 #chooser{
   position:fixed;inset:0;z-index:90;
@@ -248,7 +247,6 @@ nav a.navlink:hover{color:var(--text);background:var(--surface)}
   justify-content:center;
   align-items:center;
 }
-/* Anel giratório 3D */
 .ring-3d{
   position:absolute;
   inset:-12px;
@@ -268,7 +266,6 @@ nav a.navlink:hover{color:var(--text);background:var(--surface)}
   background:var(--bg);
   z-index:1;
 }
-/* Efeito de brilho externo */
 .glow-ring{
   position:absolute;
   inset:-20px;
@@ -293,14 +290,17 @@ nav a.navlink:hover{color:var(--text);background:var(--surface)}
   border-radius:50%;
   background:radial-gradient(circle at 30% 30%, #1a2448, #0b1024);
   display:flex;
-  flex-direction:column;
   align-items:center;
   justify-content:center;
   box-shadow:0 0 40px rgba(59,130,246,.4);
+  overflow:hidden;
 }
-.logo-3d-inner svg{
-  width:70%;
-  height:70%;
+.logo-3d-inner img{
+  width:85%;
+  height:85%;
+  object-fit:contain;
+  border-radius:50%;
+  src: "https://via.placeholder.com/200x200/0A0D1C/3B82F6?text=LOGO";
 }
 
 .eyebrow{
@@ -314,49 +314,62 @@ nav a.navlink:hover{color:var(--text);background:var(--surface)}
 .hero h1{font-size:clamp(2.5rem,6.4vw,4.4rem);font-weight:800}
 .hero p.sub{max-width:620px;margin:22px auto 0;color:var(--muted);font-size:clamp(1rem,2.2vw,1.18rem)}
 
+/* ===== CARDS (sem animação 3D) ===== */
 .cards{
-  display:grid;grid-template-columns:repeat(3,1fr);
-  gap:20px;margin:54px 0 12px;perspective:1400px
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+  margin:54px 0 12px;
 }
 @media(max-width:860px){.cards{grid-template-columns:1fr;max-width:430px;margin-inline:auto}}
 .card{
-  position:relative;padding:30px 26px 28px;border-radius:var(--radius);cursor:pointer;
+  position:relative;
+  padding:30px 26px 28px;
+  border-radius:var(--radius);
+  cursor:pointer;
   background:linear-gradient(165deg,var(--surface-2),rgba(255,255,255,.02));
-  border:1px solid var(--line);text-align:left;overflow:hidden;
-  transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s;
-  transform-style:preserve-3d
+  border:1px solid var(--line);
+  text-align:left;
+  overflow:hidden;
+  transition:transform .2s,box-shadow .2s;
 }
-.card::before{
-  content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;
-  background:var(--grad);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:.35s
+.card:hover{
+  transform:translateY(-4px);
+  border-color:var(--blue);
+  box-shadow:0 20px 40px -12px rgba(59,130,246,.5);
 }
-.card::after{
-  content:"";position:absolute;width:240px;height:240px;border-radius:50%;
-  background:radial-gradient(circle,rgba(59,130,246,.4),transparent 65%);
-  top:var(--my,30%);left:var(--mx,50%);transform:translate(-50%,-50%);
-  opacity:0;transition:opacity .35s;pointer-events:none
-}
-.card:hover{border-color:transparent;box-shadow:0 30px 60px -24px rgba(59,130,246,.6)}
-.card:hover::before,.card:hover::after{opacity:1}
 .card .ic{
-  width:54px;height:54px;border-radius:15px;display:grid;place-items:center;
-  margin-bottom:20px;background:var(--grad-soft);border:1px solid var(--line);
-  color:var(--blue-2);transform:translateZ(40px)
+  width:54px;height:54px;
+  border-radius:15px;
+  display:grid;
+  place-items:center;
+  margin-bottom:20px;
+  background:var(--grad-soft);
+  border:1px solid var(--line);
+  color:var(--blue-2);
 }
-.card h3{font-size:1.32rem;font-weight:700;margin-bottom:9px;transform:translateZ(30px)}
-.card p{color:var(--muted);font-size:.95rem;transform:translateZ(20px)}
+.card h3{font-size:1.32rem;font-weight:700;margin-bottom:9px}
+.card p{color:var(--muted);font-size:.95rem}
 .card .go{
-  display:inline-flex;align-items:center;gap:7px;margin-top:20px;
-  font-weight:600;font-size:.9rem;color:var(--sky);transform:translateZ(30px)
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  margin-top:20px;
+  font-weight:600;
+  font-size:.9rem;
+  color:var(--sky);
 }
-.card .go svg{transition:transform .3s}
-.card:hover .go svg{transform:translateX(5px)}
+.card .go svg{transition:transform .2s}
+.card:hover .go svg{transform:translateX(4px)}
 .card .tag{
-  position:absolute;top:18px;right:18px;font-size:.68rem;font-weight:600;
-  padding:4px 9px;border-radius:99px;
-  background:rgba(52,211,153,.14);color:var(--emerald);border:1px solid rgba(52,211,153,.3)
+  position:absolute;
+  top:18px;right:18px;
+  font-size:.68rem;font-weight:600;
+  padding:4px 9px;
+  border-radius:99px;
+  background:rgba(52,211,153,.14);
+  color:var(--emerald);
+  border:1px solid rgba(52,211,153,.3);
 }
 
 section.block{padding:60px 0}
@@ -370,11 +383,20 @@ section.block{padding:60px 0}
 .about-grid .aboutText{color:var(--muted)}
 .week{
   background:linear-gradient(160deg,rgba(59,130,246,.12),rgba(56,189,248,.08));
-  border:1px solid var(--line);border-radius:var(--radius);padding:28px
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:28px
 }
 .week .label{
-  display:flex;align-items:center;gap:9px;font-size:.78rem;
-  letter-spacing:.12em;text-transform:uppercase;color:var(--sky);font-weight:600;margin-bottom:14px
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-size:.78rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--sky);
+  font-weight:600;
+  margin-bottom:14px
 }
 .feature-list{list-style:none;margin-top:18px;display:grid;gap:11px}
 .feature-list li{display:flex;gap:11px;align-items:flex-start;color:var(--muted);font-size:.95rem}
@@ -387,7 +409,7 @@ footer{border-top:1px solid var(--line);padding:34px 0;margin-top:30px}
 .foot .brand{font-size:1rem}
 
 /* ============================================================
-   APP VIEW (com logo central 3D)
+   APP VIEW (sem flip, usa o mesmo modal)
    ============================================================ */
 #appView{padding:0 0 80px}
 #appView-inner{max-width:520px;margin:0 auto;padding:0 18px}
@@ -396,72 +418,43 @@ footer{border-top:1px solid var(--line);padding:34px 0;margin-top:30px}
 .app-hero h1{font-size:clamp(1.9rem,8vw,2.6rem);font-weight:800;margin-top:10px}
 .app-hero p{color:var(--muted);margin-top:10px}
 
-.appcards{display:flex;flex-direction:column;gap:26px;margin-top:30px;perspective:1600px}
-.appcard{position:relative;height:150px;border-radius:26px;cursor:pointer}
-.appcard .flip{position:absolute;inset:0;transform-style:preserve-3d}
-.flip-inner{
-  position:relative;width:100%;height:100%;
-  transition:transform .8s cubic-bezier(.4,.15,.2,1);
-  transform-style:preserve-3d
+.appcards{display:flex;flex-direction:column;gap:26px;margin-top:30px}
+.appcard{
+  position:relative;
+  height:150px;
+  border-radius:26px;
+  cursor:pointer;
+  background:linear-gradient(165deg,var(--surface-2),rgba(255,255,255,.02));
+  border:1px solid var(--line);
+  transition:transform .2s,box-shadow .2s;
+  display:flex;
+  align-items:center;
+  padding:0 24px;
+  gap:18px;
+  overflow:hidden;
 }
-.flip-inner.flipped{transform:rotateY(180deg)}
-.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:26px}
-.face.front{display:grid;place-items:center;overflow:visible}
-.face.back{
-  transform:rotateY(180deg);
-  background:linear-gradient(170deg,#0f1736,#0a0f24);
-  border:1px solid var(--line);overflow:hidden;display:flex;flex-direction:column
+.appcard:hover{
+  transform:translateY(-4px);
+  border-color:var(--blue);
+  box-shadow:0 20px 40px -12px rgba(59,130,246,.5);
 }
-.front .clip{position:absolute;inset:0;border-radius:26px;overflow:hidden;z-index:1}
-.front .content{
-  position:absolute;inset:3px;border-radius:23px;
-  background:linear-gradient(165deg,#101a3c,#0b1126);
-  z-index:2;display:flex;align-items:center;gap:18px;padding:0 24px
-}
-.front .content .ic{
-  width:60px;height:60px;flex:none;border-radius:17px;
-  display:grid;place-items:center;
+.appcard .ic{
+  width:60px;height:60px;
+  flex:none;
+  border-radius:17px;
+  display:grid;
+  place-items:center;
   background:linear-gradient(135deg,rgba(59,130,246,.25),rgba(56,189,248,.15));
-  border:1px solid rgba(96,165,250,.4);color:var(--ice);
-  box-shadow:0 0 24px rgba(59,130,246,.35) inset
+  border:1px solid rgba(96,165,250,.4);
+  color:var(--ice);
+  box-shadow:0 0 24px rgba(59,130,246,.35) inset;
 }
-.front .content .tx h3{font-size:1.3rem;font-weight:700}
-.front .content .tx p{font-size:.86rem;color:var(--muted);margin-top:3px}
-.front .content .arr{margin-left:auto;color:var(--sky)}
-
-/* card open/expanded */
-.appcard.open{
-  position:fixed;inset:14px;max-width:560px;margin:auto;
-  height:auto;min-height:0;z-index:75;
-  animation:jump .55s cubic-bezier(.2,1.3,.4,1)
-}
-@keyframes jump{0%{transform:scale(.96)}45%{transform:scale(1.03)}100%{transform:scale(1)}}
-.appcard.open .face,.appcard.open .flip,.appcard.open .flip-inner{position:absolute;inset:0;height:100%}
-.appcard.open .flip{height:100%}
-.back .bk-head{
-  position:sticky;top:0;
-  display:flex;align-items:center;gap:12px;padding:18px 20px 14px;
-  border-bottom:1px solid var(--line);
-  background:linear-gradient(180deg,#0f1736,rgba(15,23,54,.4));
-  backdrop-filter:blur(4px);z-index:3
-}
-.back .bk-head h3{font-size:1.2rem;font-weight:700}
-.back .bk-head .bk-sub{font-size:.8rem;color:var(--muted);font-weight:400}
-.back .bk-body{padding:6px 20px 24px;overflow-y:auto;flex:1}
-.bk-back{
-  width:36px;height:36px;flex:none;border-radius:10px;
-  border:1px solid var(--line);background:var(--surface);
-  color:var(--muted);cursor:pointer;display:grid;place-items:center
-}
-.bk-back:hover{color:var(--text)}
-#appscrim{
-  position:fixed;inset:0;z-index:70;
-  background:rgba(5,7,16,.72);backdrop-filter:blur(6px);display:none
-}
-#appscrim.show{display:block}
+.appcard .tx h3{font-size:1.3rem;font-weight:700}
+.appcard .tx p{font-size:.86rem;color:var(--muted);margin-top:3px}
+.appcard .arr{margin-left:auto;color:var(--sky)}
 
 /* ============================================================
-   BUTTONS
+   BUTTONS, FORMS, MODAL, TOAST (mesmos de antes)
    ============================================================ */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:9px;
@@ -490,10 +483,9 @@ footer{border-top:1px solid var(--line);padding:34px 0;margin-top:30px}
 .btn-ghost:hover{background:rgba(255,255,255,.12)}
 .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
 .btn.full{width:100%}
+.btn-sm{padding:8px 14px;font-size:.82rem}
 
-/* ============================================================
-   MODAL (site)
-   ============================================================ */
+/* MODAL */
 .scrim{
   position:fixed;inset:0;z-index:60;
   background:rgba(5,7,16,.7);backdrop-filter:blur(6px);
@@ -529,9 +521,7 @@ footer{border-top:1px solid var(--line);padding:34px 0;margin-top:30px}
 .x:hover{color:var(--text);background:var(--surface-2)}
 .modal-body{padding:6px 24px 26px}
 
-/* ============================================================
-   FORMS
-   ============================================================ */
+/* FORMS */
 .field{margin-bottom:15px}
 .field label{display:block;font-size:.85rem;font-weight:600;color:var(--muted);margin-bottom:7px}
 .field label .req{color:var(--blue-2)}
@@ -562,7 +552,6 @@ select option{background:#101736}
 }
 .seg button.on{background:var(--grad);color:#fff;box-shadow:0 6px 16px -6px rgba(59,130,246,.7)}
 
-/* upload area */
 .drop{
   border:1.5px dashed var(--line);border-radius:14px;
   padding:26px 18px;text-align:center;cursor:pointer;transition:.2s;color:var(--muted)
@@ -571,8 +560,6 @@ select option{background:#101736}
 .drop svg{margin-bottom:8px;color:var(--blue-2)}
 .drop b{color:var(--text)}
 
-/* ── BARRA DE PROGRESSO DE UPLOAD ── */
-.upload-wrap{margin-top:12px}
 .upload-status{
   display:none;align-items:center;gap:10px;
   padding:12px 14px;border-radius:12px;
@@ -598,11 +585,6 @@ select option{background:#101736}
 }
 .prog-done .prog-bar{background:linear-gradient(90deg,#34D399,#10b981)}
 
-/* filechip legado (mantido como fallback) */
-.filechip{display:none;align-items:center;gap:10px;margin-top:12px;padding:11px 14px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);border-radius:12px;font-size:.9rem}
-.filechip.show{display:flex}
-.filechip .rm{margin-left:auto;cursor:pointer;color:var(--muted)}
-
 .pkg{
   background:linear-gradient(160deg,rgba(59,130,246,.15),rgba(56,189,248,.08));
   border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:20px
@@ -614,7 +596,6 @@ select option{background:#101736}
 .pay-note{display:flex;gap:11px;align-items:flex-start;margin-top:14px;font-size:.88rem;color:var(--muted)}
 .pay-note svg{flex:none;margin-top:2px;color:var(--sky)}
 
-/* success */
 .done{text-align:center;padding:18px 6px 8px}
 .done .check{
   width:74px;height:74px;margin:0 auto 18px;border-radius:50%;
@@ -626,7 +607,7 @@ select option{background:#101736}
 .done h3{font-size:1.5rem;margin-bottom:8px}
 .done p{color:var(--muted);margin-bottom:22px}
 
-/* tabs */
+/* ADMIN PANEL */
 .tabs{display:flex;gap:6px;margin-bottom:20px;border-bottom:1px solid var(--line)}
 .tabs button{
   padding:11px 14px;background:none;border:none;color:var(--muted);
@@ -637,7 +618,7 @@ select option{background:#101736}
 .tabpane{display:none}.tabpane.on{display:block}
 .priceItem{display:flex;gap:9px;margin-bottom:9px}
 .priceItem input{flex:1}.priceItem .v{max-width:130px}
-.priceItem .del{flex:none;width:44px;border:1px solid var(--line);background:var(--surface);border-radius:11px;color:#ff7a7a;cursor:pointer}
+.priceItem .del{flex:none;width:44px;border:1px solid var(--line);background:var(--surface);border-radius:11px;color:#ff7a7a;cursor:pointer;display:grid;place-items:center}
 .recv{max-height:330px;overflow-y:auto}
 .recv .item{padding:13px 15px;border:1px solid var(--line);border-radius:13px;margin-bottom:9px;background:var(--surface)}
 .recv .item .t{font-weight:600;font-size:.95rem;display:flex;justify-content:space-between;gap:10px}
@@ -647,10 +628,13 @@ select option{background:#101736}
 .subtabs{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap}
 .subtabs button{padding:7px 13px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-family:'Inter';font-weight:600;font-size:.82rem;cursor:pointer}
 .subtabs button.on{background:var(--grad);color:#fff;border-color:transparent}
+.block-item{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px}
+.block-item .btitle{font-weight:600;font-size:.95rem;margin-bottom:4px}
+.block-item .btext{font-size:.85rem;color:var(--muted)}
+.block-item .bdel{float:right;color:#ff7a7a;cursor:pointer;border:none;background:none;font-size:1.1rem}
+.block-item .bdel:hover{color:#ff4444}
 
-/* ============================================================
-   TOAST
-   ============================================================ */
+/* TOAST */
 #toast{
   position:fixed;left:50%;bottom:26px;
   transform:translateX(-50%) translateY(20px);z-index:120;
@@ -664,10 +648,6 @@ select option{background:#101736}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.err{border-color:rgba(255,120,120,.5)}
 #toast.ok svg{color:var(--emerald)}#toast.err svg{color:#ff8a8a}
-
-/* ============================================================
-   SPINNER
-   ============================================================ */
 .spinner{
   width:17px;height:17px;
   border:2px solid rgba(255,255,255,.35);border-top-color:#fff;
@@ -675,9 +655,7 @@ select option{background:#101736}
 }
 @keyframes rot{to{transform:rotate(360deg)}}
 
-/* ============================================================
-   BOTÃO WHATSAPP FLUTUANTE
-   ============================================================ */
+/* WHATSAPP FAB */
 #waFab{
   position:fixed;bottom:24px;right:22px;z-index:50;
   display:flex;align-items:center;gap:0;
@@ -704,9 +682,6 @@ select option{background:#101736}
   box-shadow:0 4px 16px rgba(37,211,102,.4)
 }
 
-/* ============================================================
-   REDUCED MOTION
-   ============================================================ */
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -755,7 +730,7 @@ select option{background:#101736}
 </div>
 
 <!-- ================================================================
-     SITE VIEW (com LOGO CENTRAL 3D)
+     SITE VIEW
      ================================================================ -->
 <div id="siteView" class="hidden">
   <header>
@@ -793,13 +768,7 @@ select option{background:#101736}
           <div class="ring-3d"></div>
           <div class="glow-ring"></div>
           <div class="logo-3d-inner">
-            <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="100" cy="100" r="70" stroke="url(#lg)" stroke-width="6"/>
-              <text x="55" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="48" font-weight="800" fill="url(#lg)">K</text>
-              <text x="92" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="32" font-weight="700" fill="#60A5FA">R</text>
-              <text x="118" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="32" font-weight="700" fill="#38BDF8">H</text>
-              <text x="50" y="128" font-family="'Inter', sans-serif" font-size="14" font-weight="600" fill="#9FB0D8" letter-spacing="2">KONECTA</text>
-            </svg>
+            <img id="logoImgSite" src="https://via.placeholder.com/200x200/0A0D1C/3B82F6?text=LOGO" alt="KonectaRH Logo" />
           </div>
         </div>
       </div>
@@ -831,7 +800,7 @@ select option{background:#101736}
     <section class="block wrap" id="sobre">
       <div class="sec-head"><span class="num">01</span><h2>Sobre a KonectaRH</h2></div>
       <div class="about-grid">
-        <div class="panel"><p class="aboutText">Carregando…</p></div>
+        <div class="panel"><p class="aboutText" id="aboutTextSite">Carregando…</p></div>
         <div class="panel"><ul class="feature-list">
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg> Banco de talentos sempre atualizado</li>
           <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg> Triagem feita por gente que entende de gente</li>
@@ -844,9 +813,11 @@ select option{background:#101736}
       <div class="sec-head"><span class="num">02</span><h2>Atualização da semana</h2></div>
       <div class="week">
         <div class="label"><span class="dot"></span> Novidades</div>
-        <p class="weekText">Carregando…</p>
+        <p class="weekText" id="weekTextSite">Carregando…</p>
       </div>
     </section>
+    <!-- Blocos dinâmicos -->
+    <section class="block wrap" id="blocosSection"><div class="sec-head"><span class="num">03</span><h2>Mais conteúdos</h2></div><div id="blocosContainer"></div></section>
   </main>
   <footer><div class="wrap foot">
     <a href="#top" class="brand" onclick="goHome()">
@@ -867,7 +838,7 @@ select option{background:#101736}
 </div>
 
 <!-- ================================================================
-     APP VIEW (com LOGO CENTRAL 3D)
+     APP VIEW (sem flip, usa modal)
      ================================================================ -->
 <div id="appView" class="hidden">
   <header>
@@ -891,7 +862,6 @@ select option{background:#101736}
     </div>
   </header>
 
-  <!-- DRAWER -->
   <div id="drawerScrim" onclick="closeDrawer()"></div>
   <nav id="drawer" role="navigation" aria-label="Menu principal">
     <div class="drawer-header">
@@ -941,13 +911,7 @@ select option{background:#101736}
           <div class="ring-3d"></div>
           <div class="glow-ring"></div>
           <div class="logo-3d-inner">
-            <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="100" cy="100" r="70" stroke="url(#lg)" stroke-width="6"/>
-              <text x="55" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="48" font-weight="800" fill="url(#lg)">K</text>
-              <text x="92" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="32" font-weight="700" fill="#60A5FA">R</text>
-              <text x="118" y="88" font-family="'Bricolage Grotesque', sans-serif" font-size="32" font-weight="700" fill="#38BDF8">H</text>
-              <text x="50" y="128" font-family="'Inter', sans-serif" font-size="14" font-weight="600" fill="#9FB0D8" letter-spacing="2">KONECTA</text>
-            </svg>
+            <img id="logoImgApp" src="https://via.placeholder.com/200x200/0A0D1C/3B82F6?text=LOGO" alt="KonectaRH Logo" />
           </div>
         </div>
       </div>
@@ -956,59 +920,39 @@ select option{background:#101736}
       <p>Toque numa opção — ela vira e você preenche ali mesmo.</p>
     </div>
     <div class="appcards" id="appcards">
-      <!-- candidato -->
-      <div class="appcard" data-type="cand"><div class="flip"><div class="flip-inner">
-        <div class="face front" onclick="appOpen(this,'cand')">
-          <span class="glow-blur"></span><span class="clip"><span class="glow-spin"></span></span>
-          <div class="content">
-            <div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-            <div class="tx"><h3>Sou candidato</h3><p>Cadastre seu currículo</p></div>
-            <div class="arr"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
-          </div>
-        </div>
-        <div class="face back"></div>
-      </div></div></div>
-
-      <!-- empresa -->
-      <div class="appcard" data-type="cli"><div class="flip"><div class="flip-inner">
-        <div class="face front" onclick="appOpen(this,'cli')">
-          <span class="glow-blur"></span><span class="clip"><span class="glow-spin"></span></span>
-          <div class="content">
-            <div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg></div>
-            <div class="tx"><h3>Sou empresa</h3><p>Pacote de 10 currículos</p></div>
-            <div class="arr"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
-          </div>
-        </div>
-        <div class="face back"></div>
-      </div></div></div>
-
-      <!-- vagas -->
-      <div class="appcard" data-type="vag"><div class="flip"><div class="flip-inner">
-        <div class="face front" onclick="appOpen(this,'vag')">
-          <span class="glow-blur"></span><span class="clip"><span class="glow-spin"></span></span>
-          <div class="content">
-            <div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 5.4L20 8l-4 4 1 6-5-2.8L7 18l1-6-4-4 5.6-.6L12 2z"/></svg></div>
-            <div class="tx"><h3>Vagas personalizadas</h3><p>Processo completo sob medida</p></div>
-            <div class="arr"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
-          </div>
-        </div>
-        <div class="face back"></div>
-      </div></div></div>
+      <!-- CANDIDATO -->
+      <div class="appcard" onclick="openCand()">
+        <div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <div class="tx"><h3>Sou candidato</h3><p>Cadastre seu currículo</p></div>
+        <div class="arr"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </div>
+      <!-- EMPRESA -->
+      <div class="appcard" onclick="openCliente()">
+        <div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg></div>
+        <div class="tx"><h3>Sou empresa</h3><p>Pacote de 10 currículos</p></div>
+        <div class="arr"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </div>
+      <!-- VAGAS -->
+      <div class="appcard" onclick="openVagas()">
+        <div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 5.4L20 8l-4 4 1 6-5-2.8L7 18l1-6-4-4 5.6-.6L12 2z"/></svg></div>
+        <div class="tx"><h3>Vagas personalizadas</h3><p>Processo completo sob medida</p></div>
+        <div class="arr"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      </div>
     </div>
 
     <section class="block" style="padding:48px 0 0">
       <div class="sec-head"><span class="num">•</span><h2 style="font-size:1.5rem">Sobre a KonectaRH</h2></div>
-      <div class="panel"><p class="aboutText">Carregando…</p></div>
+      <div class="panel"><p class="aboutText" id="aboutTextApp">Carregando…</p></div>
       <div class="week" style="margin-top:18px">
         <div class="label"><span class="dot"></span> Atualização da semana</div>
-        <p class="weekText">Carregando…</p>
+        <p class="weekText" id="weekTextApp">Carregando…</p>
       </div>
+      <div id="blocosContainerApp" style="margin-top:24px"></div>
       <p class="credit" style="text-align:center;margin-top:34px">Desenvolvido por <b style="color:var(--emerald)">Heitor Serra Neto</b></p>
     </section>
   </div>
 </div>
 
-<!-- app card scrim -->
 <div id="appscrim" onclick="closeActive()"></div>
 
 <!-- ================================================================
@@ -1039,7 +983,7 @@ select option{background:#101736}
 <div id="toast"></div>
 
 <!-- ================================================================
-     JAVASCRIPT (TUDO MANTIDO, COM goHome() ADICIONADO)
+     JAVASCRIPT (CORRIGIDO – SEM ANIMAÇÕES)
      ================================================================ -->
 <script>
 /* ── Firebase ── */
@@ -1079,9 +1023,12 @@ const store={
 const defaultCfg={
   aboutText:"A KonectaRH nasceu pra simplificar a conexão entre quem procura uma oportunidade e quem procura a pessoa certa.\n\nUnimos um banco de talentos ativo a uma triagem cuidadosa, entregando currículos alinhados ao perfil de cada empresa — com agilidade e sem complicação.",
   weekText:"Esta semana estamos com novas vagas em atendimento, administrativo e logística. Cadastre seu currículo pra ser considerado nas próximas seleções!",
-  packagePrice:"", packageLabel:"Pacote 10 currículos", priceTable:[]
+  packagePrice:"", packageLabel:"Pacote 10 currículos", priceTable:[],
+  logoUrl:"https://via.placeholder.com/200x200/0A0D1C/3B82F6?text=LOGO",
+  blocos:[{titulo:"Vagas em destaque",texto:"Confira nossas oportunidades abertas no momento."}]
 };
 let cfg={...defaultCfg};
+
 async function loadCfg(){
   if(fbReady){
     try{
@@ -1094,6 +1041,9 @@ async function loadCfg(){
 function applyCfg(){
   document.querySelectorAll(".aboutText").forEach(e=>e.textContent=cfg.aboutText||defaultCfg.aboutText);
   document.querySelectorAll(".weekText").forEach(e=>e.textContent=cfg.weekText||defaultCfg.weekText);
+  const logoUrl=cfg.logoUrl||defaultCfg.logoUrl;
+  document.querySelectorAll("#logoImgSite,#logoImgApp").forEach(img=>img.src=logoUrl);
+  renderBlocos();
 }
 async function saveCfg(){
   if(!fbReady) throw new Error("offline");
@@ -1111,7 +1061,9 @@ function brl(v){
   return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 }
 function toast(msg,ok=true){
-  const t=$("#toast"); t.className=ok?"ok":"err";
+  const t=document.getElementById('toast');
+  if(!t) return;
+  t.className=ok?"ok":"err";
   t.innerHTML=(ok
     ?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>'
     :'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.01"/></svg>')
@@ -1124,50 +1076,48 @@ function toast(msg,ok=true){
 /* ── View switching ── */
 function enter(mode){
   store.set("crh_mode",mode);
-  $("#chooser").classList.add("hidden");
-  $("#siteView").classList.toggle("hidden",mode!=="site");
-  $("#appView").classList.toggle("hidden",mode!=="app");
-  const fab=$("#waFab");
+  document.getElementById('chooser')?.classList.add("hidden");
+  document.getElementById('siteView')?.classList.toggle("hidden",mode!=="site");
+  document.getElementById('appView')?.classList.toggle("hidden",mode!=="app");
+  const fab=document.getElementById('waFab');
   if(fab) fab.style.display=(mode==="app")?"flex":"none";
   window.scrollTo(0,0);
 }
 function showChooser(){
-  closeActive();
   closeDrawer();
-  $("#chooser").classList.remove("hidden");
-  $("#siteView").classList.add("hidden");
-  $("#appView").classList.add("hidden");
+  document.getElementById('chooser')?.classList.remove("hidden");
+  document.getElementById('siteView')?.classList.add("hidden");
+  document.getElementById('appView')?.classList.add("hidden");
 }
-/* ── GO HOME ── */
 function goHome(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
 /* ── Drawer ── */
 function toggleDrawer(){
-  const d=$("#drawer"), s=$("#drawerScrim"), h=$("#hamBtn");
-  const open=d.classList.toggle("open");
-  s.classList.toggle("show",open);
-  h.classList.toggle("open",open);
+  const d=document.getElementById('drawer'), s=document.getElementById('drawerScrim'), h=document.getElementById('hamBtn');
+  const open=d?.classList.toggle("open");
+  if(s) s.classList.toggle("show",open);
+  if(h) h.classList.toggle("open",open);
   document.body.style.overflow=open?"hidden":"";
 }
 function closeDrawer(){
-  $("#drawer").classList.remove("open");
-  $("#drawerScrim").classList.remove("show");
-  $("#hamBtn").classList.remove("open");
+  document.getElementById('drawer')?.classList.remove("open");
+  document.getElementById('drawerScrim')?.classList.remove("show");
+  document.getElementById('hamBtn')?.classList.remove("open");
   document.body.style.overflow="";
 }
 function drawerAbout(){
   closeDrawer();
   openModal("Sobre a KonectaRH","Conheça nossa história");
-  CTX=$("#mBody");
-  CTX.innerHTML=`<p style="white-space:pre-wrap;color:var(--muted)">${esc(cfg.aboutText||defaultCfg.aboutText)}</p>`;
+  const body=document.getElementById('mBody');
+  if(body) body.innerHTML=`<p style="white-space:pre-wrap;color:var(--muted)">${esc(cfg.aboutText||defaultCfg.aboutText)}</p>`;
 }
 function drawerWeek(){
   closeDrawer();
   openModal("Atualização da semana","Novidades");
-  CTX=$("#mBody");
-  CTX.innerHTML=`<div class="week" style="margin-top:0"><div class="label"><span class="dot"></span> Novidades</div><p style="white-space:pre-wrap;color:var(--muted)">${esc(cfg.weekText||defaultCfg.weekText)}</p></div>`;
+  const body=document.getElementById('mBody');
+  if(body) body.innerHTML=`<div class="week" style="margin-top:0"><div class="label"><span class="dot"></span> Novidades</div><p style="white-space:pre-wrap;color:var(--muted)">${esc(cfg.weekText||defaultCfg.weekText)}</p></div>`;
 }
 function drawerSite(){
   closeDrawer();
@@ -1180,13 +1130,13 @@ function drawerAdmin(){
 
 /* ── FAB peek ── */
 function fabPeek(){
-  const fab=$("#waFab");
+  const fab=document.getElementById('waFab');
   if(!fab) return;
   fab.classList.add("peek");
   setTimeout(()=>fab.classList.remove("peek"),3200);
 }
 
-/* ── Form HTML builders (idênticos ao original) ── */
+/* ── Form HTML builders ── */
 function formCandHTML(){
   const areaOpts=AREAS.map(a=>`<option>${a}</option>`).join("");
   return `
@@ -1210,7 +1160,7 @@ function formCandHTML(){
     <div id="candPdf" style="display:none">
       <div class="field">
         <label>Currículo em PDF <span class="req">*</span></label>
-        <div class="drop" id="drop" onclick="$('#c_file').click()">
+        <div class="drop" id="drop" onclick="document.getElementById('c_file').click()">
           <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
           <div><b>Toque para enviar</b> ou arraste</div>
           <div style="font-size:.8rem;margin-top:4px">PDF até 8&nbsp;MB</div>
@@ -1233,9 +1183,9 @@ function formCandHTML(){
 }
 
 function wireCandFile(){
-  const f=$("#c_file"); if(!f) return;
+  const f=document.getElementById('c_file'); if(!f) return;
   f.onchange=()=>showFileUI(f.files[0]);
-  const d=$("#drop"); if(!d) return;
+  const d=document.getElementById('drop'); if(!d) return;
   ["dragover","dragenter"].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.add("over")}));
   ["dragleave","drop"].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.remove("over")}));
   d.addEventListener("drop",e=>{
@@ -1247,8 +1197,8 @@ function wireCandFile(){
 }
 function showFileUI(file){
   if(!file) return;
-  if(file.size>8*1024*1024){ toast("Arquivo acima de 8 MB.",false); $("#c_file").value=""; return; }
-  const us=$("#uploadStatus"), un=$("#uploadName"), up=$("#uploadPerc"), pw=$("#progWrap"), pb=$("#progBar");
+  if(file.size>8*1024*1024){ toast("Arquivo acima de 8 MB.",false); document.getElementById('c_file').value=""; return; }
+  const us=document.getElementById('uploadStatus'), un=document.getElementById('uploadName'), up=document.getElementById('uploadPerc'), pw=document.getElementById('progWrap'), pb=document.getElementById('progBar');
   if(us){ us.classList.add("show"); us.classList.remove("prog-done"); }
   if(un) un.textContent=file.name;
   if(up) up.textContent="Pronto";
@@ -1257,8 +1207,8 @@ function showFileUI(file){
 }
 function clearFile(e){
   e&&e.stopPropagation();
-  const f=$("#c_file"); if(f) f.value="";
-  const us=$("#uploadStatus"),pw=$("#progWrap");
+  const f=document.getElementById('c_file'); if(f) f.value="";
+  const us=document.getElementById('uploadStatus'), pw=document.getElementById('progWrap');
   if(us) us.classList.remove("show","prog-done");
   if(pw) pw.style.display="none";
 }
@@ -1266,7 +1216,7 @@ async function uploadWithProgress(file, path){
   return new Promise((resolve,reject)=>{
     const ref=storage.ref().child(path);
     const task=ref.put(file);
-    const pw=$("#progWrap"), pb=$("#progBar"), up=$("#uploadPerc"), us=$("#uploadStatus");
+    const pw=document.getElementById('progWrap'), pb=document.getElementById('progBar'), up=document.getElementById('uploadPerc'), us=document.getElementById('uploadStatus');
     if(pw) pw.style.display="block";
     task.on('state_changed',
       snap=>{
@@ -1349,80 +1299,79 @@ function formVagasHTML(){
     <button class="btn btn-wa full" id="vagBtn" onclick="submitVagas()">${WA_ICON} Solicitar orçamento no WhatsApp</button>`;
 }
 
-let CTX=null;
 function candMode(m){
-  const sf=$("#segForm"),sp=$("#segPdf");
+  const sf=document.getElementById('segForm'), sp=document.getElementById('segPdf');
   if(sf) sf.classList.toggle("on",m==="form");
   if(sp) sp.classList.toggle("on",m==="pdf");
-  const cf=$("#candForm"),cp=$("#candPdf");
+  const cf=document.getElementById('candForm'), cp=document.getElementById('candPdf');
   if(cf) cf.style.display=m==="form"?"block":"none";
   if(cp) cp.style.display=m==="pdf"?"block":"none";
   window._candMode=m;
 }
 
+/* ── ABRIR MODAL (SEM ANIMAÇÃO) ── */
 function openModal(title,sub){
-  $("#mTitle").textContent=title;
-  $("#mSub").textContent=sub||"";
-  $("#scrim").classList.add("show");
+  document.getElementById('mTitle').textContent=title;
+  document.getElementById('mSub').textContent=sub||"";
+  document.getElementById('scrim').classList.add('show');
   document.body.style.overflow="hidden";
 }
 function closeModal(){
-  $("#scrim").classList.remove("show");
+  document.getElementById('scrim').classList.remove('show');
   document.body.style.overflow="";
-  setTimeout(()=>{ if(!$("#scrim").classList.contains("show")) $("#mBody").innerHTML=""; },350);
+  setTimeout(()=>{
+    if(!document.getElementById('scrim').classList.contains('show')){
+      document.getElementById('mBody').innerHTML="";
+    }
+  },350);
 }
-$("#scrim").addEventListener("click",e=>{ if(e.target===$("#scrim")) closeModal(); });
-document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeActive(); });
+document.getElementById('scrim')?.addEventListener('click',e=>{
+  if(e.target===document.getElementById('scrim')) closeModal();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') closeModal();
+});
 
-function openCand(){ openModal("Cadastro de candidato","É gratuito. Leva 1 minuto."); CTX=$("#mBody"); CTX.innerHTML=formCandHTML(); candMode('form'); wireCandFile(); }
-function openCliente(){ openModal("Contratar pacote","10 currículos • entrega em até 2 dias"); CTX=$("#mBody"); CTX.innerHTML=formClienteHTML(); }
-function openVagas(){ openModal("Vagas personalizadas","Processo seletivo completo, sob medida."); CTX=$("#mBody"); CTX.innerHTML=formVagasHTML(); }
-
-const APPMETA={
-  cand:["Cadastro de candidato","É gratuito. Leva 1 minuto.",formCandHTML],
-  cli:["Contratar pacote","10 currículos • até 2 dias",formClienteHTML],
-  vag:["Vagas personalizadas","Processo completo sob medida",formVagasHTML]
-};
-function appOpen(frontEl,type){
-  const card=frontEl.closest(".appcard");
-  const back=card.querySelector(".face.back");
-  const m=APPMETA[type];
-  back.innerHTML=`
-    <div class="bk-head">
-      <button class="bk-back" onclick="closeActive()">✕</button>
-      <div><h3>${m[0]}</h3><div class="bk-sub">${m[1]}</div></div>
-    </div>
-    <div class="bk-body" id="bkBody"></div>`;
-  CTX=back.querySelector("#bkBody");
-  CTX.innerHTML=m[2]();
-  if(type==="cand"){ candMode('form'); wireCandFile(); }
-  $("#appscrim").classList.add("show");
-  document.body.style.overflow="hidden";
-  card.classList.add("open");
-  requestAnimationFrame(()=>card.querySelector(".flip-inner").classList.add("flipped"));
+/* ── SITE OPENERS (diretos, sem delays) ── */
+function openCand(){
+  const body=document.getElementById('mBody');
+  body.innerHTML=formCandHTML();
+  candMode('form');
+  wireCandFile();
+  openModal("Cadastro de candidato","É gratuito. Leva 1 minuto.");
 }
+function openCliente(){
+  const body=document.getElementById('mBody');
+  body.innerHTML=formClienteHTML();
+  openModal("Contratar pacote","10 currículos • entrega em até 2 dias");
+}
+function openVagas(){
+  const body=document.getElementById('mBody');
+  body.innerHTML=formVagasHTML();
+  openModal("Vagas personalizadas","Processo seletivo completo, sob medida.");
+}
+
+/* ── APP OPENERS (usam o mesmo modal) ── */
+// (as funções openCand, openCliente, openVagas já servem para o app também)
+
+/* ── Fechar modal do app (se houver) ── */
 function closeActive(){
-  const card=document.querySelector(".appcard.open");
-  if(card){
-    card.querySelector(".flip-inner").classList.remove("flipped");
-    $("#appscrim").classList.remove("show");
-    document.body.style.overflow="";
-    setTimeout(()=>{ card.classList.remove("open"); card.querySelector(".face.back").innerHTML=""; },650);
-    return;
-  }
   closeModal();
 }
 
+/* ── SUBMITS (mesmo código) ── */
 async function submitCand(){
-  const nome=$("#c_nome").value.trim(), tel=$("#c_tel").value.trim();
+  const nome=document.getElementById('c_nome')?.value.trim()||'';
+  const tel=document.getElementById('c_tel')?.value.trim()||'';
   if(!nome||!tel){ toast("Preencha nome e WhatsApp.",false); return; }
   const mode=window._candMode||"form";
-  const btn=$("#candBtn"); btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Enviando…';
+  const btn=document.getElementById('candBtn');
+  if(btn){ btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Enviando…'; }
   try{
     if(!fbReady) throw new Error("Sem conexão com o servidor.");
     let pdfUrl="", pdfName="";
     if(mode==="pdf"){
-      const file=$("#c_file").files[0];
+      const file=document.getElementById('c_file')?.files[0];
       if(!file) throw new Error("Anexe o PDF do currículo.");
       if(!storage) throw new Error("Storage indisponível. Use 'Preencher dados'.");
       const path=`${COL_CAND}/${Date.now()}_${file.name.replace(/[^\w.\-]/g,'_')}`;
@@ -1431,31 +1380,33 @@ async function submitCand(){
     }
     await db.collection(COL_CAND).add({
       nome, telefone:tel,
-      email:$("#c_email").value.trim(),
-      cidade:$("#c_cidade").value.trim(),
+      email:document.getElementById('c_email')?.value.trim()||'',
+      cidade:document.getElementById('c_cidade')?.value.trim()||'',
       tipo:mode,
-      area:mode==="form"?$("#c_area").value:"",
-      cargo:mode==="form"?$("#c_cargo").value.trim():"",
-      experiencia:mode==="form"?$("#c_exp").value.trim():"",
+      area:mode==="form"?document.getElementById('c_area')?.value||'':'',
+      cargo:mode==="form"?document.getElementById('c_cargo')?.value.trim()||'':'',
+      experiencia:mode==="form"?document.getElementById('c_exp')?.value.trim()||'':'',
       pdfUrl, pdfName,
       criadoEm:new Date().toISOString(), ts:Date.now()
     });
     done("Currículo recebido!",`Obrigado, ${esc(nome.split(" ")[0])}. Você já faz parte do nosso banco de talentos. Entraremos em contato quando surgir uma vaga com seu perfil.`);
   }catch(err){
     toast(err.message||"Erro ao enviar.",false);
-    btn.disabled=false; btn.innerHTML="Enviar cadastro";
+    if(btn){ btn.disabled=false; btn.innerHTML="Enviar cadastro"; }
   }
 }
-
 async function submitCliente(){
-  const emp=$("#e_emp").value.trim(), nome=$("#e_nome").value.trim(), tel=$("#e_tel").value.trim();
+  const emp=document.getElementById('e_emp')?.value.trim()||'';
+  const nome=document.getElementById('e_nome')?.value.trim()||'';
+  const tel=document.getElementById('e_tel')?.value.trim()||'';
   if(!emp||!nome||!tel){ toast("Preencha empresa, nome e WhatsApp.",false); return; }
-  const btn=$("#cliBtn"); btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Registrando…';
+  const btn=document.getElementById('cliBtn');
+  if(btn){ btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Registrando…'; }
   const pedido={
     empresa:emp, responsavel:nome, telefone:tel,
-    email:$("#e_email").value.trim(),
-    perfil:$("#e_perfil").value,
-    descricao:$("#e_desc").value.trim(),
+    email:document.getElementById('e_email')?.value.trim()||'',
+    perfil:document.getElementById('e_perfil')?.value||'',
+    descricao:document.getElementById('e_desc')?.value.trim()||'',
     pacote:cfg.packageLabel||"10 currículos",
     preco:cfg.packagePrice||"a combinar",
     status:"aguardando pagamento 50%",
@@ -1469,64 +1420,86 @@ async function submitCliente(){
   doneWA("Pedido registrado!","Agora é só combinar o pagamento dos <b style='color:var(--text)'>50% para iniciar</b>. Toque abaixo pra falar no WhatsApp com seu pedido pronto.",
     "https://wa.me/"+WHATS+"?text="+msg);
 }
-
 async function submitVagas(){
-  const emp=$("#v_emp").value.trim(), nome=$("#v_nome").value.trim(), tel=$("#v_tel").value.trim();
+  const emp=document.getElementById('v_emp')?.value.trim()||'';
+  const nome=document.getElementById('v_nome')?.value.trim()||'';
+  const tel=document.getElementById('v_tel')?.value.trim()||'';
   if(!emp||!nome||!tel){ toast("Preencha empresa, nome e WhatsApp.",false); return; }
-  const desc=$("#v_desc").value.trim();
-  const btn=$("#vagBtn"); btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Abrindo…';
+  const desc=document.getElementById('v_desc')?.value.trim()||'';
+  const btn=document.getElementById('vagBtn');
+  if(btn){ btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Abrindo…'; }
   try{ if(fbReady) await db.collection(COL_ORC).add({empresa:emp,responsavel:nome,telefone:tel,descricao:desc,criadoEm:new Date().toISOString(),ts:Date.now()}); }catch(e){ console.warn(e); }
   const msg=encodeURIComponent(`Olá! Quero um orçamento de *vaga personalizada* (processo completo) na KonectaRH.\n\nEmpresa: ${emp}\nResponsável: ${nome}\n`+(desc?`Preciso de: ${desc}`:``));
   window.open(`https://wa.me/${WHATS}?text=${msg}`,"_blank","noopener");
-  closeActive();
+  closeModal();
   toast("Pedido registrado. Abrindo o WhatsApp…");
 }
-
 function done(t,p){
-  if(!CTX) return;
-  CTX.innerHTML=`<div class="done"><div class="check"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></div><h3>${t}</h3><p>${p}</p><button class="btn btn-primary full" onclick="closeActive()">Fechar</button></div>`;
+  const ctx=document.getElementById('mBody');
+  if(!ctx) return;
+  ctx.innerHTML=`<div class="done"><div class="check"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></div><h3>${t}</h3><p>${p}</p><button class="btn btn-primary full" onclick="closeModal()">Fechar</button></div>`;
 }
 function doneWA(t,p,wa){
-  if(!CTX) return;
-  CTX.innerHTML=`<div class="done"><div class="check"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></div><h3>${t}</h3><p>${p}</p><a class="btn btn-wa full" href="${wa}" target="_blank" rel="noopener">${WA_ICON} Combinar pagamento no WhatsApp</a><button class="btn btn-ghost full" style="margin-top:10px" onclick="closeActive()">Fechar</button></div>`;
+  const ctx=document.getElementById('mBody');
+  if(!ctx) return;
+  ctx.innerHTML=`<div class="done"><div class="check"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></div><h3>${t}</h3><p>${p}</p><a class="btn btn-wa full" href="${wa}" target="_blank" rel="noopener">${WA_ICON} Combinar pagamento no WhatsApp</a><button class="btn btn-ghost full" style="margin-top:10px" onclick="closeModal()">Fechar</button></div>`;
 }
 
+/* ── ADMIN (mesmo código) ── */
 function openAdmin(){
-  openModal("Painel da empresa","Acesso restrito");
-  CTX=$("#mBody");
-  CTX.innerHTML=`
+  const body=document.getElementById('mBody');
+  body.innerHTML=`
     <div class="field">
       <label>Senha de acesso</label>
       <input id="pin" type="password" placeholder="Digite a senha" onkeydown="if(event.key==='Enter')checkPin()">
     </div>
     <button class="btn btn-primary full" onclick="checkPin()">Entrar</button>`;
-  setTimeout(()=>{ const p=$("#pin"); if(p) p.focus(); },200);
+  openModal("Painel da empresa","Acesso restrito");
+  setTimeout(()=>{ const p=document.getElementById('pin'); if(p) p.focus(); },200);
 }
 function checkPin(){
-  if($("#pin").value!==ADMIN_PIN){ toast("Senha incorreta.",false); return; }
+  const pin=document.getElementById('pin');
+  if(!pin || pin.value!==ADMIN_PIN){ toast("Senha incorreta.",false); return; }
   adminPanel();
 }
 function adminPanel(){
-  $("#mTitle").textContent="Painel da empresa";
-  $("#mSub").textContent="Preços, conteúdo e recebidos";
-  $("#mBody").innerHTML=`
+  document.getElementById('mTitle').textContent="Painel da empresa";
+  document.getElementById('mSub').textContent="Preços, conteúdo, logo e blocos";
+  const body=document.getElementById('mBody');
+  body.innerHTML=`
     <div class="tabs">
       <button class="on" onclick="adTab(0,this)">Preços</button>
       <button onclick="adTab(1,this)">Conteúdo</button>
-      <button onclick="adTab(2,this)">Recebidos</button>
+      <button onclick="adTab(2,this)">Logo</button>
+      <button onclick="adTab(3,this)">Blocos</button>
+      <button onclick="adTab(4,this)">Recebidos</button>
     </div>
     <div class="tabpane on" id="tab0">
-      <div class="field"><label>Nome do pacote</label><input id="a_plabel" value="${esc(cfg.packageLabel||"")}"></div>
-      <div class="field"><label>Preço do pacote (R$)</label><input id="a_pprice" value="${esc(cfg.packagePrice||"")}" placeholder="Ex.: 350,00" inputmode="decimal"></div>
-      <div class="field"><label>Outros valores (opcional)</label><div id="priceList"></div><button class="btn btn-ghost" style="padding:9px 14px;font-size:.85rem" onclick="addPrice()">+ Adicionar valor</button></div>
-      <button class="btn btn-primary full" style="margin-top:8px" id="saveP" onclick="savePrices()">Salvar preços</button>
+      <div class="field"><label>Nome do pacote</label><input id="a_plabel" value="${esc(cfg.packageLabel||'')}"></div>
+      <div class="field"><label>Preço do pacote (R$)</label><input id="a_pprice" value="${esc(cfg.packagePrice||'')}" placeholder="Ex.: 350,00" inputmode="decimal"></div>
+      <div class="field"><label>Outros valores</label><div id="priceList"></div><button class="btn btn-ghost btn-sm" onclick="addPrice()">+ Adicionar valor</button></div>
+      <button class="btn btn-primary full" style="margin-top:12px" id="saveP" onclick="savePrices()">Salvar preços</button>
     </div>
     <div class="tabpane" id="tab1">
-      <div class="field"><label>Sobre a KonectaRH</label><textarea id="a_about" style="min-height:140px">${esc(cfg.aboutText||"")}</textarea></div>
-      <div class="field"><label>Atualização da semana</label><textarea id="a_week">${esc(cfg.weekText||"")}</textarea></div>
+      <div class="field"><label>Sobre a KonectaRH</label><textarea id="a_about" style="min-height:140px">${esc(cfg.aboutText||'')}</textarea></div>
+      <div class="field"><label>Atualização da semana</label><textarea id="a_week">${esc(cfg.weekText||'')}</textarea></div>
       <button class="btn btn-primary full" id="saveC" onclick="saveContent()">Salvar conteúdo</button>
     </div>
     <div class="tabpane" id="tab2">
+      <div class="field"><label>URL do logo (ou faça upload)</label><input id="a_logoUrl" value="${esc(cfg.logoUrl||'')}" placeholder="https://..."></div>
+      <div class="field"><label>Ou enviar imagem</label><input type="file" id="a_logoFile" accept="image/*"></div>
+      <button class="btn btn-primary full" id="saveLogo" onclick="saveLogo()">Salvar logo</button>
+      <div id="logoPreview" style="margin-top:16px;text-align:center"><img id="logoPreviewImg" src="${esc(cfg.logoUrl||'')}" style="max-width:150px;max-height:150px;border-radius:50%;border:2px solid var(--line)"/></div>
+    </div>
+    <div class="tabpane" id="tab3">
+      <div id="blocosAdminList"></div>
+      <div style="margin-top:16px;padding:16px;border:1px solid var(--line);border-radius:12px">
+        <div class="field"><label>Título do novo bloco</label><input id="a_blocoTitulo" placeholder="Ex.: Vagas em destaque"></div>
+        <div class="field"><label>Texto do bloco</label><textarea id="a_blocoTexto" placeholder="Conteúdo do bloco..."></textarea></div>
+        <button class="btn btn-primary full" onclick="addBloco()">Adicionar bloco</button>
+      </div>
+    </div>
+    <div class="tabpane" id="tab4">
       <div class="subtabs">
         <button class="on" onclick="recvTab('cand',this)">Candidatos</button>
         <button onclick="recvTab('ped',this)">Pedidos</button>
@@ -1534,72 +1507,131 @@ function adminPanel(){
       </div>
       <div class="recv" id="recvBox"><div class="empty">Carregando…</div></div>
     </div>`;
-  renderPrices(); recvTab('cand');
+  renderPrices(); renderBlocosAdmin(); recvTab('cand');
 }
 function adTab(i,btn){
-  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("on"));
-  btn.classList.add("on");
-  document.querySelectorAll(".tabpane").forEach((p,idx)=>p.classList.toggle("on",idx===i));
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.tabpane').forEach((p,idx)=>p.classList.toggle('on',idx===i));
 }
-function renderPrices(){ const box=$("#priceList"); box.innerHTML=""; (cfg.priceTable||[]).forEach((p,i)=>box.appendChild(priceRow(p.nome,p.valor,i))); }
+function renderPrices(){
+  const box=document.getElementById('priceList');
+  if(!box) return;
+  box.innerHTML="";
+  (cfg.priceTable||[]).forEach((p,i)=>box.appendChild(priceRow(p.nome,p.valor,i)));
+}
 function priceRow(nome,valor,i){
-  const d=document.createElement("div"); d.className="priceItem";
-  d.innerHTML=`<input placeholder="Descrição" value="${esc(nome||"")}" data-n="${i}"><input class="v" placeholder="Valor" value="${esc(valor||"")}" data-v="${i}" inputmode="decimal"><button class="del" onclick="this.parentNode.remove()">✕</button>`;
+  const d=document.createElement('div'); d.className='priceItem';
+  d.innerHTML=`<input placeholder="Descrição" value="${esc(nome||'')}" data-n="${i}"><input class="v" placeholder="Valor" value="${esc(valor||'')}" data-v="${i}" inputmode="decimal"><button class="del" onclick="this.parentNode.remove()">✕</button>`;
   return d;
 }
-function addPrice(){ $("#priceList").appendChild(priceRow("","",Date.now())); }
+function addPrice(){
+  const box=document.getElementById('priceList');
+  if(box) box.appendChild(priceRow("","",Date.now()));
+}
 async function savePrices(){
-  const b=$("#saveP"); b.disabled=true; b.innerHTML='<span class="spinner"></span> Salvando…';
-  cfg.packageLabel=$("#a_plabel").value.trim();
-  cfg.packagePrice=$("#a_pprice").value.trim();
-  cfg.priceTable=[...document.querySelectorAll("#priceList .priceItem")]
-    .map(r=>({nome:r.querySelector("[data-n]").value.trim(),valor:r.querySelector("[data-v]").value.trim()}))
-    .filter(x=>x.nome||x.valor);
-  try{ await saveCfg(); toast("Preços salvos!"); }catch(e){ toast("Não foi possível salvar.",false); }
-  b.disabled=false; b.innerHTML="Salvar preços";
+  const b=document.getElementById('saveP');
+  if(b){ b.disabled=true; b.innerHTML='<span class="spinner"></span> Salvando…'; }
+  const pl=document.getElementById('a_plabel'), pp=document.getElementById('a_pprice');
+  if(pl) cfg.packageLabel=pl.value.trim();
+  if(pp) cfg.packagePrice=pp.value.trim();
+  const items=document.querySelectorAll('#priceList .priceItem');
+  cfg.priceTable=[...items].map(r=>({nome:r.querySelector('[data-n]')?.value.trim()||'', valor:r.querySelector('[data-v]')?.value.trim()||''})).filter(x=>x.nome||x.valor);
+  try{ await saveCfg(); toast("Preços salvos!"); }catch(e){ toast("Erro ao salvar.",false); }
+  if(b){ b.disabled=false; b.innerHTML="Salvar preços"; }
 }
 async function saveContent(){
-  const b=$("#saveC"); b.disabled=true; b.innerHTML='<span class="spinner"></span> Salvando…';
-  cfg.aboutText=$("#a_about").value; cfg.weekText=$("#a_week").value;
-  try{ await saveCfg(); applyCfg(); toast("Conteúdo atualizado!"); }catch(e){ toast("Não foi possível salvar.",false); }
-  b.disabled=false; b.innerHTML="Salvar conteúdo";
+  const b=document.getElementById('saveC');
+  if(b){ b.disabled=true; b.innerHTML='<span class="spinner"></span> Salvando…'; }
+  const about=document.getElementById('a_about'), week=document.getElementById('a_week');
+  if(about) cfg.aboutText=about.value;
+  if(week) cfg.weekText=week.value;
+  try{ await saveCfg(); applyCfg(); toast("Conteúdo atualizado!"); }catch(e){ toast("Erro.",false); }
+  if(b){ b.disabled=false; b.innerHTML="Salvar conteúdo"; }
+}
+async function saveLogo(){
+  const b=document.getElementById('saveLogo');
+  if(b){ b.disabled=true; b.innerHTML='<span class="spinner"></span> Enviando…'; }
+  try{
+    const file=document.getElementById('a_logoFile')?.files[0];
+    if(file){
+      if(!storage) throw new Error("Storage indisponível.");
+      const path=`logos/${Date.now()}_${file.name.replace(/[^\w.\-]/g,'_')}`;
+      const url=await uploadWithProgress(file,path);
+      cfg.logoUrl=url;
+    } else {
+      const urlInput=document.getElementById('a_logoUrl');
+      if(urlInput) cfg.logoUrl=urlInput.value.trim()||defaultCfg.logoUrl;
+    }
+    await saveCfg(); applyCfg(); document.getElementById('logoPreviewImg').src=cfg.logoUrl; toast("Logo atualizado!");
+  }catch(e){ toast(e.message||"Erro.",false); }
+  if(b){ b.disabled=false; b.innerHTML="Salvar logo"; }
+}
+function renderBlocos(){
+  const containers=document.querySelectorAll('#blocosContainer,#blocosContainerApp');
+  containers.forEach(container=>{
+    if(!container) return;
+    container.innerHTML="";
+    (cfg.blocos||[]).forEach(b=>{
+      const div=document.createElement('div');
+      div.className='week';
+      div.style.marginTop='16px';
+      div.innerHTML=`<div class="label"><span class="dot"></span>${esc(b.titulo||'Bloco')}</div><p style="white-space:pre-wrap;color:var(--muted)">${esc(b.texto||'')}</p>`;
+      container.appendChild(div);
+    });
+  });
+}
+function renderBlocosAdmin(){
+  const box=document.getElementById('blocosAdminList');
+  if(!box) return;
+  box.innerHTML="";
+  (cfg.blocos||[]).forEach((b,i)=>{
+    const d=document.createElement('div');
+    d.className='block-item';
+    d.innerHTML=`<button class="bdel" onclick="removeBloco(${i})">✕</button><div class="btitle">${esc(b.titulo||'')}</div><div class="btext">${esc(b.texto||'')}</div>`;
+    box.appendChild(d);
+  });
+}
+function addBloco(){
+  const tit=document.getElementById('a_blocoTitulo'), txt=document.getElementById('a_blocoTexto');
+  if(!tit||!txt||!tit.value.trim()){ toast("Preencha o título.",false); return; }
+  if(!cfg.blocos) cfg.blocos=[];
+  cfg.blocos.push({titulo:tit.value.trim(), texto:txt.value.trim()||''});
+  tit.value=""; txt.value="";
+  saveCfg().then(()=>{ applyCfg(); renderBlocosAdmin(); toast("Bloco adicionado!"); }).catch(()=>toast("Erro ao salvar.",false));
+}
+function removeBloco(i){
+  if(!cfg.blocos||i>=cfg.blocos.length) return;
+  cfg.blocos.splice(i,1);
+  saveCfg().then(()=>{ applyCfg(); renderBlocosAdmin(); toast("Bloco removido."); }).catch(()=>toast("Erro.",false));
 }
 async function recvTab(which,btn){
-  if(btn){ document.querySelectorAll(".subtabs button").forEach(b=>b.classList.remove("on")); btn.classList.add("on"); }
-  const box=$("#recvBox"); box.innerHTML='<div class="empty">Carregando…</div>';
-  if(!fbReady){ box.innerHTML='<div class="empty">Sem conexão com o servidor.</div>'; return; }
-  const col=which==="cand"?COL_CAND:which==="ped"?COL_PED:COL_ORC;
+  if(btn){ document.querySelectorAll('.subtabs button').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); }
+  const box=document.getElementById('recvBox');
+  if(!box) return;
+  box.innerHTML='<div class="empty">Carregando…</div>';
+  if(!fbReady){ box.innerHTML='<div class="empty">Sem conexão.</div>'; return; }
+  const col=which==='cand'?COL_CAND:which==='ped'?COL_PED:COL_ORC;
   try{
-    const snap=await db.collection(col).orderBy("ts","desc").limit(40).get();
-    if(snap.empty){ box.innerHTML='<div class="empty">Nada por aqui ainda.</div>'; return; }
+    const snap=await db.collection(col).orderBy('ts','desc').limit(40).get();
+    if(snap.empty){ box.innerHTML='<div class="empty">Nada por aqui.</div>'; return; }
     let html="";
     snap.forEach(doc=>{
       const d=doc.data();
       const when=d.criadoEm?new Date(d.criadoEm).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):"";
-      if(which==="cand"){
+      if(which==='cand'){
         html+=`<div class="item"><div class="t"><span>${esc(d.nome||"—")}</span><span class="when">${when}</span></div><div class="d">${esc(d.cargo||d.area||"")} • ${esc(d.telefone||"")}${d.pdfUrl?` • <a href="${d.pdfUrl}" target="_blank" style="color:var(--sky)">ver PDF</a>`:""}</div></div>`;
-      }else if(which==="ped"){
+      }else if(which==='ped'){
         html+=`<div class="item"><div class="t"><span>${esc(d.empresa||"—")}</span><span class="when">${when}</span></div><div class="d">${esc(d.perfil||"")} • ${esc(d.responsavel||"")} • ${esc(d.telefone||"")}<br>${esc(d.status||"")} ${d.preco?`• ${esc(brl(d.preco)||d.preco)}`:""}</div></div>`;
       }else{
         html+=`<div class="item"><div class="t"><span>${esc(d.empresa||"—")}</span><span class="when">${when}</span></div><div class="d">${esc(d.responsavel||"")} • ${esc(d.telefone||"")}<br>${esc(d.descricao||"")}</div></div>`;
       }
     });
     box.innerHTML=html;
-  }catch(e){ box.innerHTML='<div class="empty">Erro ao carregar (verifique as regras do Firestore).</div>'; }
+  }catch(e){ box.innerHTML='<div class="empty">Erro ao carregar.</div>'; }
 }
 
-/* ── 3D tilt cards ── */
-if(!matchMedia("(prefers-reduced-motion:reduce)").matches && matchMedia("(pointer:fine)").matches){
-  document.querySelectorAll("#cards .card").forEach(card=>{
-    card.addEventListener("mousemove",e=>{
-      const r=card.getBoundingClientRect();
-      const x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height;
-      card.style.transform=`rotateY(${(x-.5)*9}deg) rotateX(${(.5-y)*9}deg) translateY(-6px)`;
-      card.style.setProperty("--mx",x*100+"%"); card.style.setProperty("--my",y*100+"%");
-    });
-    card.addEventListener("mouseleave",()=>card.style.transform="");
-  });
-}
+/* ── 3D tilt cards (removido) ── */
 
 /* ── Network canvas ── */
 (function(){
@@ -1647,14 +1679,14 @@ loadCfg();
 const saved=store.get("crh_mode");
 if(saved==="site"||saved==="app"){
   enter(saved);
-  const fab=$("#waFab");
+  const fab=document.getElementById('waFab');
   if(fab) fab.style.display=(saved==="app")?"flex":"none";
   if(saved==="app") setTimeout(fabPeek,1800);
 }else{
-  const fab=$("#waFab");
+  const fab=document.getElementById('waFab');
   if(fab) fab.style.display="none";
 }
-if(!fbReady) toast("Servidor indisponível agora — textos exibidos são os padrão.",false);
+if(!fbReady) toast("Modo offline - dados locais.",false);
 </script>
 </body>
 </html>
