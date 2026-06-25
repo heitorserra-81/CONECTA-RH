@@ -396,11 +396,11 @@ select option{background:#101736}
   </main>
   <nav id="tabbar"></nav>
 </div>
-<div id="waFabWrap">
-  <a id="waFab" href="https://wa.me/5519996829927?text=Ol%C3%A1%21+Vim+pelo+KonectaRH+e+gostaria+de+falar+sobre+recrutamento." target="_blank" rel="noopener" aria-label="Entre em contato pelo WhatsApp">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M.06 24l1.68-6.13A11.86 11.86 0 0 1 .12 11.9C.12 5.34 5.46 0 12.02 0a11.82 11.82 0 0 1 8.41 3.49 11.82 11.82 0 0 1 3.48 8.42c0 6.56-5.34 11.9-11.9 11.9a11.9 11.9 0 0 1-5.68-1.45L.06 24zM6.6 20.2l.36.21a9.86 9.86 0 0 0 5.04 1.38h.01c5.45 0 9.89-4.43 9.89-9.88a9.82 9.82 0 0 0-2.9-7A9.82 9.82 0 0 0 12.02 2c-5.46 0-9.9 4.43-9.9 9.88 0 1.87.53 3.7 1.51 5.28l.24.38-1 3.63 3.73-.97z"/></svg>
+<div id="waFabWrap" style="position:fixed;right:18px;bottom:calc(var(--tab-h,68px) + 18px);z-index:9000;display:flex;flex-direction:column;align-items:center;gap:5px">
+  <a id="waFab" href="https://wa.me/5519996829927?text=Ol%C3%A1%21+Vim+pelo+KonectaRH+e+gostaria+de+falar+sobre+recrutamento." onclick="event.preventDefault();location.href=this.href" aria-label="WhatsApp" style="width:56px;height:56px;border-radius:50%;background:#25D366;color:#fff;display:grid;place-items:center;box-shadow:0 6px 24px -4px rgba(37,211,102,.65);text-decoration:none;flex:none">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M.06 24l1.68-6.13A11.86 11.86 0 0 1 .12 11.9C.12 5.34 5.46 0 12.02 0a11.82 11.82 0 0 1 8.41 3.49 11.82 11.82 0 0 1 3.48 8.42c0 6.56-5.34 11.9-11.9 11.9a11.9 11.9 0 0 1-5.68-1.45L.06 24zM6.6 20.2l.36.21a9.86 9.86 0 0 0 5.04 1.38h.01c5.45 0 9.89-4.43 9.89-9.88a9.82 9.82 0 0 0-2.9-7A9.82 9.82 0 0 0 12.02 2c-5.46 0-9.9 4.43-9.9 9.88 0 1.87.53 3.7 1.51 5.28l.24.38-1 3.63 3.73-.97z"/></svg>
   </a>
-  <span id="waFabLabel">Entre em contato<br>pelo WhatsApp</span>
+  <span style="font-size:.6rem;font-weight:600;color:#fff;text-align:center;line-height:1.3;background:rgba(0,0,0,.55);padding:3px 8px;border-radius:7px;white-space:nowrap;pointer-events:none">WhatsApp</span>
 </div>
 <div id="drawerScrim" onclick="closeDrawer()"></div>
 <nav id="drawer">
@@ -1827,9 +1827,8 @@ buildTopbar();
 loadCfg();
 if(fbReady){watchAuth();}else{toast("Sem conexão — verifique a internet.",false);finishBoot();}
 setTimeout(finishBoot,4000);
-</script>
-</body>
-</html>async function adPagamentos(){const box=$('#ad5');box.innerHTML=skeletonCards(3);try{
+
+async function adPagamentos(){const box=$('#ad5');box.innerHTML=skeletonCards(3);try{
   const[planos,pedidos]=await Promise.all([db.collection(C.emp).where('planoStatus','==','pendente').get(),db.collection(C.ped).get()]);
   const pedDocs=pedidos.docs.map(d=>({id:d.id,...d.data()}));
   const liberados=pedDocs.filter(p=>p.status==='liberado');
@@ -1845,3 +1844,7 @@ setTimeout(finishBoot,4000);
   requestAnimationFrame(()=>$$('#ad5 .bar').forEach(b=>b.style.height=(b.dataset.h||0)+'%'));
 }catch(e){box.innerHTML='<div class="empty">Erro.</div>';}}
 
+
+</script>
+</body>
+</html>
